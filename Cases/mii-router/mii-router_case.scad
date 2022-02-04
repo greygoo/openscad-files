@@ -46,11 +46,12 @@ loc_t3_screws       = [[2.6,2.6],
                        [dim_t3_board[0]-2.6,dim_t3_board[1]-3.2,0],
                        [2.6,dim_t3_board[1]-3.2,0]];
 cuts_t3             = [[[9.2,-13.2],[9,9],hole_depth,0],  // antenna port
-                       [[9.2,-13.2],[9,9],10,0],          // internal antenna cutout//fix!!
+                       [[9.2,-13.2],[11.35,11.35],10,0],          // internal antenna cutout//fix!!
                        [[2,-dim_t3_board[2]],[22.5,5.5],hole_depth,2],  // sdcard/usb port
                        [[7.2,-dim_t3_board[2]-3.6],[5.75,3.6],hole_depth,1],  // power switch
                        [[20.10,-dim_t3_board[2]-2.1],[4.5,2.1],hole_depth,1],// reset button
-                       [[(dim_t3_board[1]-20)/2,-10],[20,10],15,3]]; // opening to side
+                       [[0,-dim_t3_board[2]],[dim_t3_board[1],uppers_t3+dim_t3_board[2]],10,3], // opening to side high
+                       [[(dim_t3_board[1]-20)/2,-10],[20,8.8],15,3]]; // opening to side long
 
 // calculated values
 height_batt         = uppers_batt+lowers_batt+dim_batt_board[2];
@@ -78,8 +79,8 @@ loc_conn_low        = [[dim_batt_board[0]+2*(wall+rim)+(screw_spacing+dia_conn)/
 
 // uncomment the part to render
 //part_top();
-part_t3();
-//part_pi();
+//part_t3();
+part_pi();
 //part_battery();
 //part_bottom();
 
@@ -113,7 +114,7 @@ module part_pi(){
         translate([-50,-50,height_batt+lowers_pi-wall-100]){
             cube([200,200,100]);
         }
-        translate([-50,-50,height_batt+height_pi]){
+        translate([-50,-50,height_batt+height_pi-wall]){
             cube([200,200,100]);
         }
     }  
@@ -122,10 +123,10 @@ module part_pi(){
 module part_t3(){
     difference(){
         complete_object();
-        translate([-50,-50,height_batt+height_pi-100]){
+        translate([-50,-50,height_batt+height_pi-wall-100]){
             cube([200,200,100]);
         }
-        translate([-50,-50,height_batt+height_pi+height_t3]){
+        translate([-50,-50,height_batt+height_pi+height_t3-uppers_t3-dim_t3_board[2]]){
             cube([200,200,100]);
         }
     }
@@ -134,7 +135,7 @@ module part_t3(){
 module part_top(){
     difference(){
         complete_object();
-        translate([-50,-50,height_batt+height_pi+height_t3-100]){
+        translate([-50,-50,height_batt+height_pi+height_t3-uppers_t3-dim_t3_board[2]-100]){
             #cube([200,200,100]);
         }
     }
@@ -155,7 +156,7 @@ module complete_object(){
                 }
                 battery(render_mode="shape");
                 pi(render_mode="shape");
-                t3(render_mode="shape");
+                #t3(render_mode="shape");
             }
             // add cases whith connection holes cut out
             connection_short(dia=dia_conn+screw_spacing);
