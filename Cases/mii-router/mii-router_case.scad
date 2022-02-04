@@ -5,7 +5,8 @@ $fn=32;
 hole_depth          = 30;   // outwards length of port cut outs
 wall                = 2;    // wall thickness of board cases
 rim                 = 0.6;  // rim thickness around boards
-screw_spacing       = 1;    // space around screw holes
+rim_screws_b        = 1;    // space around board screw holes
+rim_screws_c        = 1.2;  // space around case connection screws
 mki                 = 2;    // value for rounding corners of cases
 
 // battery values
@@ -59,32 +60,32 @@ height_pi           = uppers_pi+lowers_pi+dim_pi_board[2];
 height_t3           = uppers_t3+lowers_t3+dim_t3_board[2];
 
 // connection screw values
-dia_conn            = 3.5; // diameter of screws connectiong all cases
+dia_conn            = 3.2; // diameter of screws connectiong all cases
 overhang_conn       = 6; // how much higher the connection screws than the cases
 height_conn_high    = height_batt+height_pi+height_t3+overhang_conn;
 height_conn_low     = height_batt+height_pi+overhang_conn;
-loc_conn_high       = [[-(screw_spacing+dia_conn)/2+wall,
-                        (screw_spacing+dia_conn)/2],
-                       [(screw_spacing+dia_conn)/2,
-                        dim_batt_board[1]+2*(wall+rim)+(screw_spacing+dia_conn)/2-wall],
-                       [dim_t3_board[0]+2*(wall+rim)+(screw_spacing+dia_conn)/2,
-                        -(dim_pi_board[1]-dim_batt_board[1])-(screw_spacing+dia_conn)/2+wall],
-                       [dim_t3_board[0]+2*(wall+rim)-(screw_spacing+dia_conn)/2,
-                        dim_batt_board[1]+2*(wall+rim)+(screw_spacing+dia_conn)/2-wall]];
-loc_conn_low        = [[dim_batt_board[0]+2*(wall+rim)+(screw_spacing+dia_conn)/2-wall,
-                        (screw_spacing+dia_conn)/2],
-                       [dim_batt_board[0]+2*(wall+rim)-(screw_spacing+dia_conn)/2,
-                        dim_batt_board[1]+2*(wall+rim)+(screw_spacing+dia_conn)/2-wall]];
+loc_conn_high       = [[-(rim_screws_b+dia_conn)/2+wall,
+                        (rim_screws_b+dia_conn)/2],
+                       [(rim_screws_b+dia_conn)/2,
+                        dim_batt_board[1]+2*(wall+rim)+(rim_screws_b+dia_conn)/2-wall],
+                       [dim_t3_board[0]+2*(wall+rim)+(rim_screws_b+dia_conn)/2,
+                        -(dim_pi_board[1]-dim_batt_board[1])-(rim_screws_b+dia_conn)/2+wall],
+                       [dim_t3_board[0]+2*(wall+rim)-(rim_screws_b+dia_conn)/2,
+                        dim_batt_board[1]+2*(wall+rim)+(rim_screws_b+dia_conn)/2-wall]];
+loc_conn_low        = [[dim_batt_board[0]+2*(wall+rim)+(rim_screws_b+dia_conn)/2-wall,
+                        (rim_screws_b+dia_conn)/2],
+                       [dim_batt_board[0]+2*(wall+rim)-(rim_screws_b+dia_conn)/2,
+                        dim_batt_board[1]+2*(wall+rim)+(rim_screws_b+dia_conn)/2-wall]];
 
 
 // uncomment the part to render
 //part_top();
 //part_t3();
-part_pi();
+//part_pi();
 //part_battery();
 //part_bottom();
 
-//complete_object();
+complete_object();
 
 // create parts by cutting out from whole object
 module part_bottom(){
@@ -148,8 +149,8 @@ module complete_object(){
             // hull with port cutouts
             difference(){
                 hull(){
-                    connection_short(dia=dia_conn+screw_spacing);
-                    connection_long(dia=dia_conn+screw_spacing);
+                    connection_short(dia=dia_conn+rim_screws_b);
+                    connection_long(dia=dia_conn+rim_screws_b);
                     battery(render_mode="normal");
                     pi(render_mode="normal");
                     t3(render_mode="normal");
@@ -159,28 +160,28 @@ module complete_object(){
                 #t3(render_mode="shape");
             }
             // add cases whith connection holes cut out
-            connection_short(dia=dia_conn+screw_spacing);
-            connection_long(dia=dia_conn+screw_spacing);
+            connection_short(dia=dia_conn+rim_screws_b);
+            connection_long(dia=dia_conn+rim_screws_b);
             battery(render_mode="normal");
             pi(render_mode="normal");
             t3(render_mode="normal");
         }
         // cut out the connection screw holes
-        connection_short(dia=dia_conn);
-        connection_long(dia=dia_conn);
+        connection_short(dia=dia_conn,fn=$fn);
+        connection_long(dia=dia_conn,fn=$fn);
         // cut out top screw openings
         translate([0,0,height_conn_high-(overhang_conn/2-1)]){
-            connection_long(dia=dia_conn+2*screw_spacing);
+            connection_long(dia=dia_conn+2*rim_screws_c,fn=$fn);
         }
         translate([0,0,height_conn_low-(overhang_conn/2-1)]){
-            connection_short(dia=dia_conn+2*screw_spacing);
+            connection_short(dia=dia_conn+2*rim_screws_c,fn=$fn);
         }
         // cut out bottom screw openings
         translate([0,0,-height_conn_high+(overhang_conn/2-1)]){
-            connection_long(dia=dia_conn+2*screw_spacing);
+            connection_long(dia=dia_conn+2*rim_screws_c,fn=6);
         }
         translate([0,0,-height_conn_low+(overhang_conn/2-1)]){
-            connection_short(dia=dia_conn+2*screw_spacing);
+            connection_short(dia=dia_conn+2*rim_screws_c,fn=6);
         }
     }
 }
@@ -194,7 +195,7 @@ module battery(render_mode){
          h2=lowers_batt,
          w=wall,
          r=rim,
-         space_s=screw_spacing,
+         space_s=rim_screws_b,
          mki=mki,
          cuts=cuts_batt,
          render_mode=render_mode);
@@ -212,7 +213,7 @@ module pi(render_mode){
              h2=lowers_pi,
              w=wall,
              r=rim,
-             space_s=screw_spacing,
+             space_s=rim_screws_b,
              mki=mki,
              cuts=cuts_pi,
              render_mode=render_mode);
@@ -231,7 +232,7 @@ module t3(render_mode){
              h2=lowers_t3,
              w=wall,
              r=rim,
-             space_s=screw_spacing,
+             space_s=rim_screws_b,
              mki=mki,
              cuts=cuts_t3,
              render_mode=render_mode);
@@ -239,29 +240,32 @@ module t3(render_mode){
 }
 
 // long connection screws
-module connection_long(dia){
+module connection_long(dia,fn){
     translate([0,0,-overhang_conn/2]){
         conn_holes(locations=loc_conn_high,
                    dia=dia,
-                   h=height_conn_high);
+                   h=height_conn_high,
+                   fn=fn);
     }
 }
 
 // short connection screws
-module connection_short(dia){
+module connection_short(dia,fn){
     translate([0,0,-overhang_conn/2]){
         conn_holes(locations=loc_conn_low,
                    dia=dia,
-                   h=height_conn_low);
+                   h=height_conn_low,
+                   fn=fn);
     }
 }
 
 // make screw_holes
-module conn_holes(locations,dia,h){
+module conn_holes(locations,dia,h,fn){
     for (location=locations){
         translate([location[0],location[1],0]){
             cylinder(d=dia,
-                     h=h);
+                     h=h,
+                     $fn=fn);
         }
     }
 }
