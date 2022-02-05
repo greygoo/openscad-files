@@ -16,9 +16,9 @@ module create_cuts(d,w,h1,h2,cuts){
         
         // front
         if(cut[3]==0){
-            translate([cut[0][0],0,cut[0][1]]){
-                translate([w,w-cut[2],0]){
-                    cube([cut[1][0],cut[2],cut[1][1]]);
+            translate([cut[0][0],0,cut[0][1]]){ // place x/y
+                translate([w,w-cut[2],0]){      // place on selected wall
+                    cube([cut[1][0],cut[2],cut[1][1]]); // create cube
                 }
             }
         }
