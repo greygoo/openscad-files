@@ -34,14 +34,14 @@ module make_cuts_v2(dim=[10,10,0],
         side    = cut[3];
         shape   = cut[4];
         
-// fix: move to loc
+
         if(side=="front" || side=="back" || side==0 || side==1) {
-            translate([x/2,0,y/2]+[0,0,dim[2]]){
+            translate([x/2,0,y/2]+[0,0,dim[2]]){        // move x,y to 0 and on top of board
                 if(side=="front" || side==0)
-                    translate([loc_x,0,loc_y])
-                        rotate([90,0,0]) // rotate have length outwords
-                            translate([0,0,+l/2]) // move inside wall
-                                mkshape(x,y,l,shape);
+                    translate([loc_x,0,loc_y])          // move to location
+                        rotate([90,0,0])                // rotate up
+                            translate([0,0,+l/2])       // move up to z=0
+                                mkshape(x,y,l,shape);   // create centered shape
 
                 if(side=="back" || side==1)
                     translate([dim[0]-x,0,0]+[-loc_x,0,loc_y])
