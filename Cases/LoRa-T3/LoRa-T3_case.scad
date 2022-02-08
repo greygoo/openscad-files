@@ -1,4 +1,4 @@
-include <../generic_case/basic_case-parameterized-v2.scad>
+include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
 wall                = 1.6;
 rim                 = 0.8;
