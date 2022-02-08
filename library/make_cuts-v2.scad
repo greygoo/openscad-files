@@ -14,7 +14,7 @@ $fn=32;
 //cuts=[[cut_location,cut_size,cut_length,"front","cone"],
 //      [cut_location,cut_size,cut_length,"back","square"],
 //      [cut_location,cut_size,cut_length,"left","round"],
-//      [cut_location,cut_size,cut_length,"right","square"],
+//      [cut_location,cut_size,cut_length,"right","indented"],
 //      [cut_location,cut_size,cut_length,"top","square"],
 //      [cut_location,cut_size,cut_length,"bottom","square"]];
 //%cube(board_dim);
@@ -98,10 +98,21 @@ module mkshape(x,y,l,shape){
     }
     if(shape=="cone"){
         hull(){
-            cube([x,y,0.000001],center=true);
-            translate([0,0,l]){
+            cube([x,y,l],center=true);
+            translate([0,0,l/2-0.000001/2]){
                 cube([2*x,2*y,0.000001],center=true);
             }
         }
+    }
+    if(shape=="indented"){
+        cube([x,y,l],center=true);
+        //translate([-x/2,-y/2,l/2]){
+            hull(){
+                cube([2*x,2*y,0.000001],center=true);
+                translate([0,0,l/2-0.000001/2]){
+                    cube([2*x,2*y,0.000001],center=true);
+                }
+            }
+        //}
     }
 }
