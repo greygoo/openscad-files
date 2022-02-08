@@ -1,4 +1,3 @@
-$fn=32;
 //module to create openings for a electronics board
 // d        - cube dimension [x,y,z] 
 // cuts     - array of cuts to be created
@@ -31,6 +30,7 @@ $fn=32;
 //           sqr_button/rnd_button
 
 // Example
+//$fn=32;
 //board_dim=[20,20,1.5];
 //cut_location=[0,0];
 //cut_size=[3,2];

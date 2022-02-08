@@ -1,11 +1,10 @@
-//$fn=32;
-
 include <make_cuts-v2.scad>
 include <cube_round_xy.scad>
 include <screw_holes.scad>
 
 // Example values
 // Render options
+$fn              = 32;
 case_part        = "case";
 render_mode      = "normal";
 
