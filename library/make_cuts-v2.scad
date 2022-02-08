@@ -34,15 +34,15 @@ $fn=32;
 //board_dim=[20,20,1.5];
 //cut_location=[0,0];
 //cut_size=[3,2];
-//cut_length=3;
-//extend=5;
+//cut_length=5;
+//extend=7;
 //move=0;
 //cuts=[[cut_location,cut_size,cut_length,"front","sqr"],
 //      [cut_location,cut_size,cut_length,"back","sqr_cone"],
 //      [cut_location,cut_size,cut_length,"left","sqr_indent"],
-//      [cut_location,cut_size,cut_length,"right","rnd"],
-//      [cut_location,cut_size,cut_length,"top","sqr"],
-//      [cut_location,cut_size,cut_length,"bottom","sqr"]];
+//      [cut_location,cut_size,cut_length,"right","sqr_button"],
+//      [cut_location,cut_size,cut_length,"top","rnd_indent"],
+//      [cut_location,cut_size,cut_length,"bottom","rnd_button"]];
 //      
 //%cube(board_dim);
 //make_cuts_v2(dim=board_dim,
@@ -132,7 +132,7 @@ module mkshape(x,y,l,shape,extend,move){
                 }
                 if(extend>=0){
                     translate([0,0,l/2+extend-0.000001/2]){
-                        #cube([2*x,2*y,0.000001],center=true);
+                        cube([2*x,2*y,0.000001],center=true);
                     }
                 }
             }
@@ -141,16 +141,21 @@ module mkshape(x,y,l,shape,extend,move){
     if(shape=="sqr_indent"){
         translate([0,0,move]){
             cube([x,y,l],center=true);
-            hull(){
-                cube([2*x,2*y,0.000001],center=true);
-                translate([0,0,l/2+extend-0.000001/2]){
-                    cube([2*x,2*y,0.000001],center=true);
-                }
+            translate([0,0,+l/4+extend/2]){
+                cube([2*x,2*y,l/2+extend],center=true);
             }
         }
     }
     if(shape=="sqr_button"){
-        
+        translate([0,0,move]){
+            cube([x,y,l],center=true);
+            translate([0,0,-l/4]){
+                cube([2*x,2*y,l/2],center=true);
+            }
+            translate([0,0,l/2+extend/2]){
+                cube([2*x,2*y,extend],center=true);
+            }
+        }
     }
     
     // round shapes
@@ -162,12 +167,49 @@ module mkshape(x,y,l,shape,extend,move){
         }
     }
     if(shape=="rnd_cone"){
-        
+        translate([-x/2,-y/2,+move]){
+            resize([0,2*y,0]){
+                cylinder(d1=x,d2=2*x,h=l,center=true);
+            }
+            translate([0,0,l/2+extend/2]){
+                resize([0,2*y,0]){
+                    cylinder(d=2*x,h=extend,center=true);
+                }
+            }
+        }        
     }
     if(shape=="rnd_indent"){
-        
+            translate([-x/2,-y/2,-l/4+move]){
+                resize([0,y,0]){
+                    cylinder(d=x,h=l/2,center=true);
+                }
+            }
+            translate([-x/2,-y/2,l/4+move]){
+                resize([0,2*y,0]){
+                    cylinder(d=2*x,h=l/2,center=true);
+                }
+            }
+            translate([-x/2,-y/2,l/2+extend/2+move]){
+                resize([0,2*y,0]){
+                    cylinder(d=2*x,h=extend,center=true);
+                }
+            }
     }
     if(shape=="rnd_button"){
-        
+            translate([-x/2,-y/2,l/4+move]){
+                resize([0,y,0]){
+                    cylinder(d=x,h=l/2,center=true);
+                }
+            }
+            translate([-x/2,-y/2,-l/4+move]){
+                resize([0,2*y,0]){
+                    cylinder(d=2*x,h=l/2,center=true);
+                }
+            }
+            translate([-x/2,-y/2,l/2+extend/2+move]){
+                resize([0,2*y,0]){
+                    cylinder(d=2*x,h=extend,center=true);
+                }
+            }
     }
 }
