@@ -1,4 +1,5 @@
-// module to create openings on a cube case
+$fn=32;
+//module to create openings on a cube case
 // d    = cube dimension [x,y,z]
 // w    = object wall thickness 
 // cuts = array of cuts to be created
@@ -10,14 +11,14 @@
 //cut_location=[0,0];
 //cut_size=[3,2];
 //cut_length=5;
-//cuts=[[cut_location,cut_size,cut_length,"front","square"],
+//cuts=[[cut_location,cut_size,cut_length,"front","cone"],
 //      [cut_location,cut_size,cut_length,"back","square"],
-//      [cut_location,cut_size,cut_length,"left","square"],
+//      [cut_location,cut_size,cut_length,"left","round"],
 //      [cut_location,cut_size,cut_length,"right","square"],
 //      [cut_location,cut_size,cut_length,"top","square"],
 //      [cut_location,cut_size,cut_length,"bottom","square"]];
 //%cube(board_dim);
-
+//
 //make_cuts_v2(dim=board_dim,
 //             cuts=cuts);
 
@@ -89,8 +90,18 @@ module mkshape(x,y,l,shape){
         cube([x,y,l],center=true);
     }
     if(shape=="round"){
-        translate([-x/2,-y/2,0])
-        resize([0,y,0])
-            cylinder(d=x,h=l,center=true);
+        translate([-x/2,-y/2,0]){
+            resize([0,y,0]){
+                cylinder(d=x,h=l,center=true);
+            }
+        }
+    }
+    if(shape=="cone"){
+        hull(){
+            cube([x,y,0.000001],center=true);
+            translate([0,0,l]){
+                cube([2*x,2*y,0.000001],center=true);
+            }
+        }
     }
 }
