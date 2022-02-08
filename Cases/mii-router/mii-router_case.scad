@@ -1,4 +1,4 @@
-include <basic_case-parameterized.scad>
+include <../generic_case/basic_case-parameterized.scad>
 
 // global values
 $fn=32;
@@ -80,12 +80,12 @@ loc_conn_low        = [[dim_batt_board[0]+2*(wall+rim)+(rim_screws_c+dia_conn)/2
 
 // uncomment the part to render
 //part_top();
-part_t3();
+//part_t3();
 //part_pi();
 //part_battery();
 //part_bottom();
 
-//complete_object();
+complete_object();
 
 // create parts by cutting out from whole object
 module part_bottom(){
