@@ -4,7 +4,7 @@ include <screw_holes.scad>
 
 // Example values
 // Render options
-$fn              = 32;
+/*$fn              = 32;
 case_part        = "case";
 render_mode      = "normal";
 
@@ -60,7 +60,7 @@ case(part=case_part,
      dia_bscrew=dia_bscrew,
      dia_bhead=dia_bhead,
      height_bhead=height_bhead,     
-     loc_bscrews=loc_bscrews);
+     loc_bscrews=loc_bscrews);*/
      
 // case module
 module case(part="case", // which part to render

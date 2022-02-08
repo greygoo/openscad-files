@@ -17,14 +17,14 @@ cuts_t3             = [[[14.8,-8],[7,7],wall+rim+1,"front","rnd"],  // antenna p
                        [[13.4,0],[11.5,3],wall+rim+1,"left","sqr"],  // sdcard/usb port
                        [[40.8,-dim_t3_board[2]-2.1],[4.65,2.1],wall+rim+1,"back","sqr"],  // reset
                        [[49.5,-dim_t3_board[2]-4],[9.4,4],wall+rim+1,"back","sqr"]];// reset button
-space_t3_screws        = 1;
+space_t3_screws     = 1;
 
 case(dim_b=dim_t3_board,
-     h1=uppers_t3,
-     h2=lowers_t3,
-     dia_s=dia_t3_screws,
-     space_s=space_t3_screws,     
-     loc_s=loc_t3_screws,
+     space_top=uppers_t3,
+     space_bottom=lowers_t3,
+     dia_bscrew=dia_t3_screws,
+     space_bscrew=space_t3_screws,     
+     loc_bscrews=loc_t3_screws,
      cuts=cuts_t3,
      w=wall,
      r=rim);
