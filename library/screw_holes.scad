@@ -2,10 +2,10 @@
 
 
 
-module screw_holes(loc,dia,h){
+module screw_holes(loc,dia,h,fn=32){
     for(l=loc){
         translate(l){
-            cylinder(d=dia,h=h);
+            cylinder(d=dia,h=h,$fn=fn);
         }
     }
 }
