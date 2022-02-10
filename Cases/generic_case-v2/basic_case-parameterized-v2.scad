@@ -5,7 +5,7 @@ include <screw_holes.scad>
 // Example values
 // Render options
 /*$fn              = 32;
-case_part        = "case_bottom";
+case_part        = "case_cover";
 render_mode      = "normal";
 
 // Board values
@@ -38,7 +38,8 @@ cuts             = [[[0,0],[5,3],wall_frame+rim,"front","sqr_cone"],
                     [[0,0],[5,3],wall_frame+rim,"left","sqr"],
                     [[0,0],[5,3],wall_frame+rim,"right","sqr"],
                     [[0,0],[5,3],wall_frame+rim,"top","sqr"],
-                    [[0,0],[5,3],wall_frame+rim   ,"bottom","sqr"]];
+                    [[0,0],[5,3],wall_frame+rim,"bottom","sqr"],
+                    ];
 
 
 // case module
@@ -74,6 +75,7 @@ module case(part="frame", // which part to render
             rim=0.3,         // rim between board and wall_frame thickness
             mki=2,       // corner rounding value (0=no rounding)
             gap=0.2,
+            grow=2,
             
             dim_board,     // board dimension (without components)
             cuts,      // location of port openings ()
@@ -95,13 +97,17 @@ module case(part="frame", // which part to render
     height_frame    = space_top+space_bottom+dim_board[2]; // height of case without bottom/cover
     height_case     = height_frame+2*(height_chead);
     height_bscrew   = space_bottom-height_bhead;
-    wall_case       = dia_chead+wall_frame; 
+    wall_case       = dia_chead; 
     dim_frame       = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),space_top+space_bottom];
     dim_case        = dim_frame+[2*(wall_case-wall_frame),2*(wall_case-wall_frame),height_case]; 
-    loc_cscrews     = [[-(dia_chead/2-wall_frame),-(dia_chead/2-wall_frame)],
-                      [dim_frame[0]+(dia_chead/2-wall_frame),-(dia_chead/2-wall_frame)],
-                      [dim_frame[0]+(dia_chead/2-wall_frame),dim_frame[1]+(dia_chead/2-wall_frame)],
-                      [-(dia_chead/2-wall_frame),dim_frame[1]+(dia_chead/2-wall_frame)]];
+    loc_cscrews     = [[-(wall_case-wall_frame-dia_chead/2),-(wall_case-wall_frame-dia_chead/2+0.36844)],
+                      [dim_frame[0]+(wall_case-wall_frame-dia_chead/2),-(wall_case-wall_frame-dia_chead/2+0.36844)],
+                      [dim_frame[0]+(wall_case-wall_frame-dia_chead/2),dim_frame[1]+(wall_case-wall_frame-dia_chead/2+0.36844)],
+                      [-(wall_case-wall_frame-dia_chead/2),dim_frame[1]+(wall_case-wall_frame-dia_chead/2+0.36844)]];
+    loc_corner_cuts = [[0,0],
+                       [dim_case[0],0],
+                       [dim_case[0],dim_case[1]],
+                       [0,dim_case[1]]];
     
     
     
@@ -128,28 +134,35 @@ module case(part="frame", // which part to render
                 }
                 screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
                 screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead,fn=6);
+                
                 translate([0,0,height_chead]){
-                    #cutout_ports(extend=wall_case);
+                    cutout_ports(extend=wall_case+0.2,grow=grow);
                 }
             }
-            
+            screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
         }
     }
     
     if(part=="case_cover"){
         difference(){
-            translate([0,0,height_chead+space_bottom]){
-                cube_round_xy([dim_case[0],dim_case[1],height_chead+space_top+dim_board[2]],mki);
+            translate([0,0,space_bottom]){
+                cube_round_xy([dim_case[0],dim_case[1],2*height_chead+space_top+dim_board[2]],mki);
+            }
+            translate([0,0,height_case-height_chead]){
+                screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
             }
             translate([wall_case-wall_frame,wall_case-wall_frame,0]){
-                #translate([0,0,(height_case-height_frame)/2]){
+                translate([0,0,(height_case-height_frame)/2]){
                     translate([-gap/2,-gap/2,-gap/2]){
                         cube_round_xy([dim_frame[0]+gap,dim_frame[1]+gap,space_bottom+gap],mki);
                     }
                 }
-                #screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
+                screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
                 translate([0,0,height_case-height_chead]){
-                    #screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead);
+                    screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead);
+                }
+                translate([0,0,height_chead]){
+                    #cutout_ports(extend=wall_case+wall_frame,move=-wall_frame,grow=grow);
                 }
             }
             translate([wall_case+wall_frame,
@@ -168,7 +181,7 @@ module case(part="frame", // which part to render
                 outer_frame(height=height);
                 inner_frame();
             }
-            cutout_ports();
+            cutout_ports(grow=grow);
         }
     }
     
@@ -225,9 +238,9 @@ module case(part="frame", // which part to render
     }
     
     // cutout of port openings
-    module cutout_ports(extend=0){
+    module cutout_ports(extend=0,move=0,grow=2){
         translate([wall_frame+rim,wall_frame+rim,space_bottom]){
-            make_cuts_v2(dim=dim_board,cuts=cuts,extend=extend);
+            make_cuts_v2(dim=dim_board,cuts=cuts,extend=extend,move=move,grow=grow);
         }
     }
     
