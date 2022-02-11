@@ -13,7 +13,7 @@ loc_t3_screws       = [[2.6,1.45],
                        [dim_t3_board[0]-2.6,3.2,0],
                        [dim_t3_board[0]-2.6,dim_t3_board[1]-1.45,0],
                        [2.6,dim_t3_board[1]-3.2,0]];
-cuts_t3             = [[[14.8,-8],[7,7],wall+rim+1,"front","rnd"],  // antenna port
+cuts_t3             = [[[14.8,-8],[7,7],wall+rim+1,"front","rnd_indent"],  // antenna port
                        [[2.75,0],[8,3],wall+rim+1,"left","sqr_indent"], // usb port
                        [[13.4,0],[11.5,3],wall+rim+1,"left","sqr_indent"],  // sdcard/usb port
                        [[40.8,-dim_t3_board[2]-2.1],[4.65,2.1],wall+rim+1,"back","sqr_button"],  // reset
@@ -21,9 +21,12 @@ cuts_t3             = [[[14.8,-8],[7,7],wall+rim+1,"front","rnd"],  // antenna p
 space_t3_screws     = 1;
 grow                = 4;
 height_bottom       = 9;
+dia_cscrew          = 2;
+dia_chead           = 4;
+height_chead        = 1.8;
 
 
-%case(part="case_bottom",
+case(part="case_cover",
      dim_board=dim_t3_board,
      space_top=uppers_t3,
      space_bottom=lowers_t3,
@@ -34,6 +37,9 @@ height_bottom       = 9;
      wall_frame=wall,
      rim=rim,
      grow=grow,
+     dia_cscrew=dia_cscrew,
+     dia_chead=dia_chead,
+     height_chead=height_chead,
      height_bottom=height_bottom);
 
 
@@ -48,10 +54,13 @@ height_bottom       = 9;
      wall_frame=wall,
      rim=rim,
      grow=grow,
+          dia_cscrew=dia_cscrew,
+     dia_chead=dia_chead,
+     height_chead=height_chead,
      height_bottom=height_bottom);
 
     
-case(part="case_cover",
+/*%case(part="case_bottom",
      dim_board=dim_t3_board,
      space_top=uppers_t3,
      space_bottom=lowers_t3,
@@ -62,4 +71,7 @@ case(part="case_cover",
      wall_frame=wall,
      rim=rim,
      grow=grow,
-     height_bottom=height_bottom);
+          dia_cscrew=dia_cscrew,
+     dia_chead=dia_chead,
+     height_chead=height_chead,
+     height_bottom=height_bottom);*/

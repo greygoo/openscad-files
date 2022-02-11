@@ -97,9 +97,9 @@ module case(part="frame", // which part to render
     // calculate values;
     height_bscrew   = space_bottom-height_bhead;
     height_frame    = space_top+space_bottom+dim_board[2]; // height of case without bottom/cover
-    height_case     = height_frame+2*(height_chead);
     height_floor    = height_chead+1;
     height_top      = height_chead+1;
+    height_case     = height_frame+height_top+height_floor;
     height_inlay    = space_bottom;
     height_headspace = space_top;
     //height_bottom   = space_bottom+height_floor-rim;
@@ -179,7 +179,7 @@ module case(part="frame", // which part to render
         translate([wall_case,wall_case,height_floor]){
             cutout_frame_bottom();
             cutout_frame_cover();
-            cutout_case_ports();
+            #cutout_case_ports();
         }
     }
     
@@ -205,7 +205,7 @@ module case(part="frame", // which part to render
     
     module cutout_frame_cover(){
         // cut out for inlay
-        #translate([0,0,height_inlay]){
+        translate([0,0,height_inlay]){
             cube_round_xy([dim_frame[0],
                            dim_frame[1],
                            dim_board[2]+space_top],mki);
