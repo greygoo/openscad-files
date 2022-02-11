@@ -153,6 +153,7 @@ module case(part="frame", // which part to render
         difference(){
             bottom();
             cutouts_case();
+            cutout_case_screws();
         }
     }
     
