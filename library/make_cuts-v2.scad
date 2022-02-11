@@ -53,6 +53,7 @@
 //             grow=grow);
 
 module make_cuts_v2(dim=[10,10,0],
+                    length=5,
                     cuts=[[[0,0],[10,10,10],1,"front","sqr"]],
                     extend=0,
                     move=0,
@@ -63,7 +64,8 @@ module make_cuts_v2(dim=[10,10,0],
         loc_y   = cut[0][1];
         x       = cut[1][0];
         y       = cut[1][1];
-        l       = cut[2];
+        l       = length;
+        //l       = cut[2];
         side    = cut[3];
         shape   = cut[4];
         
