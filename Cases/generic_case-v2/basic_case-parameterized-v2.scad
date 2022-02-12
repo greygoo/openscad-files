@@ -179,7 +179,7 @@ module case(part="frame", // which part to render
         translate([wall_case,wall_case,height_floor]){
             cutout_frame_bottom();
             cutout_frame_cover();
-            #cutout_case_ports();
+            cutout_case_ports();
         }
     }
     
@@ -227,10 +227,11 @@ module case(part="frame", // which part to render
     }
 
     module cutout_case_ports(){
-        cutout_ports(move=-wall_frame-gap,extend=wall_case,grow=grow);
+        cutout_ports(move=-wall_frame-gap,extend=height_cover,grow=grow);
     }
     
-    module frame(height=dim_frame[2]){
+    module frame(height=height_frame){
+    //module frame(height=dim_frame[2]){
         difference(){
             union(){
                 outer_frame(height=height);
