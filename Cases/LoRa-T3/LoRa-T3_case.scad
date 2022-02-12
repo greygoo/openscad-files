@@ -1,8 +1,13 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
+part                = "case_cover";
+//part                = "case_inlay";
+//part                = "case_bottom";
+
 wall                = 1.2;
 rim                 = 0.8;
+mki                 = 4;
 
 // T3 LoRa frame values
 dim_t3_board        = [65,27,1.25];
@@ -23,11 +28,16 @@ space_t3_screws     = 1;
 grow                = 4;
 height_bottom       = 9;
 dia_cscrew          = 2.3;
-dia_chead           = 4;
+dia_chead           = 4.7;
 height_chead        = 1.8;
+text                = "TSM";
+font                = "Source Sans Pro:style=Bold";
+size_text           = 8;
+loc_text            = [4.5,14.5];
 
 
-case(part="case_bottom",
+
+case(part=part,
      dim_board=dim_t3_board,
      space_top=uppers_t3,
      space_bottom=lowers_t3,
@@ -41,4 +51,9 @@ case(part="case_bottom",
      dia_cscrew=dia_cscrew,
      dia_chead=dia_chead,
      height_chead=height_chead,
-     height_bottom=height_bottom);
+     height_bottom=height_bottom,
+     mki=mki,
+     text=text,
+     size_text=size_text,
+     loc_text=loc_text,
+     font=font);
