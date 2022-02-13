@@ -88,6 +88,11 @@ module case(part="frame", // which part to render
             height_chead = 3,
             height_cscrew = 15,
             height_bottom = 5, // height of bottom case part
+            
+            text = "TSM",
+            font = "Liberation Sans:style=Bold Italic",
+            loc_text = [10,10],
+            size_text = 20,
      
             dia_bscrew=3,       // screw diameter
             height_bhead=2.4, 
@@ -107,7 +112,7 @@ module case(part="frame", // which part to render
 
     wall_case       = dia_chead-wall_frame;
     dim_frame       = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
-    dim_case        = dim_frame+[2*wall_case,2*wall_case,height_case]; 
+    dim_case        = dim_frame+[2*wall_case,2*wall_case,height_case];
     
     loc_cscrews     = [[dia_chead/2,dia_chead/2-0.36844],
                        [dim_case[0]-dia_chead/2,dia_chead/2-0.36844],
@@ -126,20 +131,14 @@ module case(part="frame", // which part to render
     
     if(part=="case_inlay"){
         case_inlay();
-        //%case_bottom();
-        //%case_cover();
     }
     
     if(part=="case_bottom"){
         case_bottom();
-        //%case_cover();
-        //%case_inlay();
     }
     
     if(part=="case_cover"){
         case_cover();
-        //%case_bottom();
-        //%case_inlay();
     }
     
     module case_inlay(){
@@ -172,6 +171,7 @@ module case(part="frame", // which part to render
                 }
             }
             cutout_case_screws();
+            cutout_font();
         }    
     }
     
@@ -212,6 +212,14 @@ module case(part="frame", // which part to render
         }
     }
     
+    module cutout_font(){
+        translate([loc_text[0],loc_text[1],height_case-1]){
+            linear_extrude(1){
+                text(text=text,font=font,size=size_text,valign="bottom",halign="left");
+            }
+        }
+    }
+    
     module cutout_case_screws(){
         // cut out screw holes
         screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
@@ -231,7 +239,6 @@ module case(part="frame", // which part to render
     }
     
     module frame(height=height_frame){
-    //module frame(height=dim_frame[2]){
         difference(){
             union(){
                 outer_frame(height=height);
