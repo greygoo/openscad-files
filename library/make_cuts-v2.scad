@@ -1,13 +1,13 @@
 //module to create openings for a electronics board
 // d        - cube dimension [x,y,z] 
 // cuts     - array of cuts to be created
+// length   - length of the created cuts 
 // extend   - amount to extend outwards
 // move     - move inwards(-)/outwards(+)
 //
 // cuts: 
 //          [[[x,y],    // location
 //            [x,y],    // size
-//            length,   // length
 //            side,     // side
 //            shape],   // shape
 //           [...],...]
@@ -17,8 +17,6 @@
 //          meassured from the boards left top
 //      size:
 //          x/y dimension of the opening
-//      length:
-//          length of the opening
 //      side:
 //          Side of the board, one of
 //          front,back,left,right,top,bottom
@@ -32,29 +30,30 @@
 // Example
 //$fn=32;
 //board_dim=[20,20,1.5];
-//cut_location=[0,0];
-//cut_size=[3,2];
-//cut_length=5;
+//length=5;
 //extend=7;
 //move=0;
 //grow=4;
-//cuts=[[cut_location,cut_size,cut_length,"front","sqr"],
-//      [cut_location,cut_size,cut_length,"back","sqr_cone"],
-//      [cut_location,cut_size,cut_length,"left","sqr_indent"],
-//      [cut_location,cut_size,cut_length,"right","sqr_button"],
-//      [cut_location,cut_size,cut_length,"top","rnd_indent"],
-//      [cut_location,cut_size,cut_length,"bottom","rnd_button"]];
+//cut_location=[0,0];
+//cut_size=[3,2];
+//cuts=[[cut_location,cut_size,"front","sqr"],
+//      [cut_location,cut_size,"back","sqr_cone"],
+//      [cut_location,cut_size,"left","sqr_indent"],
+//      [cut_location,cut_size,"right","sqr_button"],
+//      [cut_location,cut_size,"top","rnd_indent"],
+//      [cut_location,cut_size,"bottom","rnd_button"]];
 //      
 //%cube(board_dim);
 //make_cuts_v2(dim=board_dim,
 //             cuts=cuts,
+//             length=length,
 //             extend=extend,
 //             move=move,
 //             grow=grow);
 
 module make_cuts_v2(dim=[10,10,0],
-                    length=5,
-                    cuts=[[[0,0],[10,10,10],1,"front","sqr"]],
+                    cuts=[[[0,0],[10,10,10],"front","sqr"]],
+                    length=1,
                     extend=0,
                     move=0,
                     grow=2){
@@ -64,10 +63,8 @@ module make_cuts_v2(dim=[10,10,0],
         loc_y   = cut[0][1];
         x       = cut[1][0];
         y       = cut[1][1];
-        l       = length;
-        //l       = cut[2];
-        side    = cut[3];
-        shape   = cut[4];
+        side    = cut[2];
+        shape   = cut[3];
         
 
         if(side=="front" || side=="back" || side==0 || side==1) {
@@ -75,14 +72,14 @@ module make_cuts_v2(dim=[10,10,0],
                 if(side=="front" || side==0)
                     translate([loc_x,0,loc_y])          // move to location
                         rotate([90,0,0])                // rotate up
-                            translate([0,0,+l/2])       // move up to z=0
-                                mkshape(x,y,l,shape,extend,move,grow);   // create centered shape
+                            translate([0,0,+length/2])       // move up to z=0
+                                mkshape(x,y,length,shape,extend,move,grow);   // create centered shape
 
                 if(side=="back" || side==1)
                     translate([dim[0]-x,0,0]+[-loc_x,0,loc_y])
                         rotate([270,0,0])
-                            translate([0,0,+l/2+dim[1]])
-                                mkshape(x,y,l,shape,extend,move,grow);
+                            translate([0,0,+length/2+dim[1]])
+                                mkshape(x,y,length,shape,extend,move,grow);
             }
         }
 
@@ -91,14 +88,14 @@ module make_cuts_v2(dim=[10,10,0],
                 if(side=="right" || side==3)
                     translate([0,loc_x,loc_y]+[0,0,0])
                         rotate([90,0,90])
-                            translate([0,0,+l/2+dim[0]])
-                                mkshape(x,y,l,shape,extend,move,grow);
+                            translate([0,0,+length/2+dim[0]])
+                                mkshape(x,y,length,shape,extend,move,grow);
             
                 if(side=="left" || side==2)
                     translate([0,dim[1]-x,0]+[0,-loc_x,loc_y])
                         rotate([90,0,270])
-                            translate([0,0,+l/2])
-                                mkshape(x,y,l,shape,extend,move,grow);
+                            translate([0,0,+length/2])
+                                mkshape(x,y,length,shape,extend,move,grow);
             }
         }
 
@@ -107,14 +104,14 @@ module make_cuts_v2(dim=[10,10,0],
                 if(side=="top" || side==4)
                     translate([loc_x,loc_y,0])
                         rotate([0,0,0])
-                            translate([0,0,+l/2+dim[2]])
-                                mkshape(x,y,l,shape,extend,move,grow);
+                            translate([0,0,+length/2+dim[2]])
+                                mkshape(x,y,length,shape,extend,move,grow);
                 
                 if(side=="bottom" || side==5)
                     translate([0,dim[1]-y,0]+[loc_x,-loc_y,0])
                         rotate([180,0,0])
-                            translate([0,0,+l/2]) 
-                                mkshape(x,y,l,shape,extend,move,grow);
+                            translate([0,0,+length/2]) 
+                                mkshape(x,y,length,shape,extend,move,grow);
             }
         }
     }
