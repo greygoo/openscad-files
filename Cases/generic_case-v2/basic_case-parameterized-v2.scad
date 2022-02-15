@@ -5,7 +5,7 @@ include <screw_holes.scad>
 // Example values
 // Render options
 /*$fn              = 32;
-case_part        = "case_inlay";
+case_part        = "case_all";
 render_mode      = "normal";
 
 // Board values
@@ -33,12 +33,12 @@ rim              = 1;
 mki              = 2;
                   
 // ports
-cuts             = [[[0,0],[5,3],wall_frame+rim,"front","sqr_indent"],       
-                    [[0,0],[5,3],wall_frame+rim,"back","sqr_indent"],
-                    [[0,0],[5,3],wall_frame+rim,"left","sqr"],
-                    [[0,0],[5,3],wall_frame+rim,"right","sqr"],
-                    [[0,0],[5,3],wall_frame+rim,"top","sqr"],
-                    [[0,0],[5,3],wall_frame+rim,"bottom","sqr_indent"],
+cuts             = [[[0,0],[5,3],"front","sqr_indent"],       
+                    [[0,0],[5,3],"back","sqr_indent"],
+                    [[0,0],[5,3],"left","sqr"],
+                    [[0,0],[5,3],"right","sqr"],
+                    [[0,0],[5,3],"top","sqr"],
+                    [[0,0],[5,3],"bottom","sqr_indent"],
                     ];
 
 
@@ -49,6 +49,7 @@ case(part=case_part,
      wall_frame=wall_frame,
      rim=rim,
      mki=mki,
+     port_length=wall_frame+rim,
           
      dim_board=dim_board,
      cuts=cuts,
@@ -76,6 +77,7 @@ module case(part="frame", // which part to render
             mki=2,       // corner rounding value (0=no rounding)
             gap=0.3,
             grow=2,
+            port_length,
             
             dim_board,     // board dimension (without components)
             cuts,      // location of port openings ()
@@ -139,6 +141,13 @@ module case(part="frame", // which part to render
     
     if(part=="case_cover"){
         case_cover();
+    }
+    
+    if(part=="case_all"){
+        case_bottom();
+        case_cover();
+        case_inlay();
+
     }
     
     module case_inlay(){
@@ -291,9 +300,9 @@ module case(part="frame", // which part to render
     }
     
     // cutout of port openings
-    module cutout_ports(extend=0,move=0,grow=2){
+    module cutout_ports(length=5,extend=0,move=0,grow=2){
         translate([wall_frame+rim,wall_frame+rim,space_bottom]){
-            make_cuts_v2(dim=dim_board,cuts=cuts,extend=extend,move=move,grow=grow);
+            make_cuts_v2(dim=dim_board,cuts=cuts,length=length,extend=extend,move=move,grow=grow);
         }
     }
 }
