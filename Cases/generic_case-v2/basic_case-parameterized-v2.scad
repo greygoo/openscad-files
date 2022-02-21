@@ -41,8 +41,6 @@ cuts             = [[[0,0],[5,3],"front","sqr_indent"],
                     [[0,0],[5,3],"bottom","sqr_indent"],
                     ];
 
-
-// case module
 case(part=case_part,
      render_mode=render_mode,
      
@@ -125,7 +123,9 @@ module case(part="frame", // which part to render
                        [dim_case[0],dim_case[1]],
                        [0,dim_case[1]]];
     
-    
+    /////////////////////////////////////////////////////////////
+    // Render the requested part
+    /////////////////////////////////////////////////////////////
     
     if(part=="frame"){
         frame();
@@ -149,6 +149,10 @@ module case(part="frame", // which part to render
         case_inlay();
 
     }
+    
+    /////////////////////////////////////////////////////////////
+    // Part modules
+    /////////////////////////////////////////////////////////////
     
     module case_inlay(){
         translate([wall_case,wall_case,height_floor]){
@@ -188,7 +192,7 @@ module case(part="frame", // which part to render
         translate([wall_case,wall_case,height_floor]){
             cutout_frame_bottom();
             cutout_frame_cover();
-            cutout_case_ports();
+            cutout_ports();
         }
     }
     
@@ -203,70 +207,31 @@ module case(part="frame", // which part to render
         }
     }
     
-    module cutout_frame_bottom(){
-        // cut out for inlay
-        translate([-gap,-gap,0]){
-            cube_round_xy([dim_frame[0]+2*gap,
-                           dim_frame[1]+2*gap,
-                           height_inlay],mki);
-        }
-    }
-    
-    module cutout_frame_cover(){
-        // cut out for inlay
-        translate([0,0,height_inlay]){
-            cube_round_xy([dim_frame[0],
-                           dim_frame[1],
-                           dim_board[2]+space_top],mki);
-        }
-    }
-    
-    module cutout_font(){
-        translate([loc_text[0],loc_text[1],height_case-1]){
-            linear_extrude(1){
-                text(text=text,font=font,size=size_text,valign="bottom",halign="left");
-            }
-        }
-    }
-    
-    module cutout_case_screws(){
-        // cut out screw holes
-        screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
-        // cut out screw heads bottom
-        screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead,fn=6);
-        // cut of corners
-        screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
-        // cut out screw heads top
-        translate([0,0,height_case-height_chead]){
-            screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead);
-            screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
-        }
-    }
-
-    module cutout_case_ports(){
-        cutout_ports(move=-wall_frame-gap,extend=height_cover,grow=grow);
-    }
-    
     module frame(height=height_frame){
         difference(){
             union(){
                 outer_frame(height=height);
                 inner_frame();
             }
-            cutout_ports(grow=grow);
+            cutout_ports();
         }
     }
     
+    
+    /////////////////////////////////////////////////////////////
+    // part composition
+    /////////////////////////////////////////////////////////////
+    
+    module inner_frame(){
+        rim();
+        board_screws();
+    }
+       
     module outer_frame(height=dim_frame[2]){
         difference(){
             cube_round_xy([dim_frame[0],dim_frame[1],height],mki);
             cutout_board();
         }
-    }
-    
-    module inner_frame(){
-        rim();
-        board_screws();
     }
     
     module rim(){
@@ -292,17 +257,74 @@ module case(part="frame", // which part to render
             }
         }
     }
-     
+    
+    
+    /////////////////////////////////////////////////////////////
+    // Cutout modules
+    /////////////////////////////////////////////////////////////
+    // Create cutout in case for adding bottom frame part
+    //cutout_frame_bottom();
+    module cutout_frame_bottom(){
+        // cut out for inlay
+        translate([-gap,-gap,0]){
+            cube_round_xy([dim_frame[0]+2*gap,
+                           dim_frame[1]+2*gap,
+                           height_inlay],mki);
+        }
+    }
+    
+    // Create cutout in case for adding cover frame part
+    //cutout_frame_cover();
+    module cutout_frame_cover(){
+        // cut out for inlay
+        translate([0,0,height_inlay]){
+            cube_round_xy([dim_frame[0],
+                           dim_frame[1],
+                           dim_board[2]+space_top],mki);
+        }
+    }
+        
+    // Cutout for board in frame
+    //cutout_board();
     module cutout_board(){
         translate([wall_frame,wall_frame,0]){
             cube([dim_board[0]+2*rim,dim_board[1]+2*rim,height_frame]);
         }
     }
     
-    // cutout of port openings
-    module cutout_ports(length=5,extend=0,move=0,grow=2){
+    // Create cutout font on cover
+    module cutout_font(){
+        translate([loc_text[0],loc_text[1],height_case-1]){
+            linear_extrude(1){
+                text(text=text,font=font,size=size_text,valign="bottom",halign="left");
+            }
+        }
+    }
+    
+    // Create cutout for case screws
+    //cutout_case_screws();
+    module cutout_case_screws(){
+        // cut out screw holes
+        screw_holes(loc=loc_cscrews,dia=dia_cscrew,h=height_case);
+        // cut out screw heads bottom
+        screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead,fn=6);
+        // cut of corners
+        screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
+        // cut out screw heads top
+        translate([0,0,height_case-height_chead]){
+            screw_holes(loc=loc_cscrews,dia=dia_chead,h=height_chead);
+            screw_holes(loc=loc_corner_cuts,dia=dia_chead,h=height_chead);
+        }
+    }
+
+    module cutout_ports(){
         translate([wall_frame+rim,wall_frame+rim,space_bottom]){
-            make_cuts_v2(dim=dim_board,cuts=cuts,length=length,extend=extend,move=move,grow=grow);
+            make_cuts_v2(dim=dim_board,
+                         cuts=cuts,
+                         length=4*wall_frame+4*rim,
+                         extend=height_cover,
+                         move=-rim-wall_frame-wall_frame/2,
+                         grow=grow);
         }
     }
 }
