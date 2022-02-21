@@ -1,13 +1,12 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-// render
-RaspberryPiZero();
 
 // Variable values - Examples
-//part                = "case_cover";
-//part                = "case_inlay";
-//part                = "case_bottom";
+part                = "case_all";
+
+// render
+RaspberryPiZero(part=part);
 
 // Fixed values - do not change
 dim_pi_board        = [65,30,1.5];
