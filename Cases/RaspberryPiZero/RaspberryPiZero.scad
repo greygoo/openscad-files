@@ -1,11 +1,7 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-
-// Variable values - Examples
 //part                = "case_all";
-
-// render
 //RaspberryPiZero(part=part);
 
 // Fixed values - do not change
@@ -25,7 +21,6 @@ cuts_pi             = [[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"], 
                        [[6.5,23.5],[51,5.5],"top","sqr"]]; // gpio header
 space_pi_screws     = 2;
 
-
 module RaspberryPiZero(part="case_all",
                        dia_cscrew = 2.3,
                        dia_chead = 4.7,
@@ -39,9 +34,7 @@ module RaspberryPiZero(part="case_all",
                        port_length = 4.8,
                        mki = 4,
                        grow = 4.5,
-                       height_bottom = 4.8,
-                       dia_chead = 4.7,
-                       height_chead = 1.8){              
+                       height_bottom = 4.8){              
                
     case(part=part,
          dim_board=dim_pi_board,
