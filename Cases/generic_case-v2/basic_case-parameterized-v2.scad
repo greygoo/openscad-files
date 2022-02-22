@@ -266,10 +266,10 @@ module case(part="frame", // which part to render
     //cutout_frame_bottom();
     module cutout_frame_bottom(){
         // cut out for inlay
-        translate([-gap,-gap,0]){
+        translate([-gap,-gap,-2*gap]){
             cube_round_xy([dim_frame[0]+2*gap,
                            dim_frame[1]+2*gap,
-                           height_inlay],mki);
+                           height_inlay+2*gap],mki);
         }
     }
     
