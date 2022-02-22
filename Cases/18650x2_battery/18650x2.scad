@@ -1,10 +1,10 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-part                = "case_cover";
+//part                = "case_cover";
 
 // Render
-bat(part);
+//bat(part);
 
 dim_bat_board        = [100.5,48.5,1.65];
 uppers_bat           = 5;
