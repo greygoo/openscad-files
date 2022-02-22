@@ -62,7 +62,19 @@ case(part=case_part,
      loc_bscrews=loc_bscrews);*/
 
      
-function calc_height_case(height_frame,height_top,height_floor) = height_frame+height_top+height_floor;
+function calc_height_case(height_frame,
+                          height_top,
+                          height_floor) = height_frame+height_top+height_floor;
+                          
+function calc_height_bscrew(space_bottom,
+                            height_bhead) = space_bottom-height_bhead;
+                            
+function calc_height_frame(space_top,
+                           space_bottom,
+                           dim_board) = space_top+space_bottom+dim_board[2];
+                           
+function calc_height_floor(height_chead,wall_frame) = max(height_chead+wall_frame,wall_frame);
+function calc_height_cover(height_case,height_bottom) = height_case-height_bottom;
      
 // case module
 module case(part="frame", // which part to render
@@ -97,16 +109,23 @@ module case(part="frame", // which part to render
                                 //starting left lower corner, counterclockwise)  
 {
     // calculate values;
-    height_bscrew   = space_bottom-height_bhead;
-    height_frame    = space_top+space_bottom+dim_board[2]; // height of case without bottom/cover
-    height_floor    = height_chead+1;
-    height_top      = height_chead+1;
-    //height_case     = calc_height_case(height_frame,height_top,height_floor);
-    height_case     = height_frame+height_top+height_floor;
+//    height_bscrew   = space_bottom-height_bhead;
+//    height_frame    = space_top+space_bottom+dim_board[2]; // height of case without bottom/cover
+//    height_floor    = height_chead+1;
+//    height_top      = height_chead+1;
+//    height_cover    = height_case-height_bottom;
+//    height_case     = height_frame+height_top+height_floor;
+    height_bscrew   = calc_height_bscrew(space_bottom,height_bhead);
+    height_frame    = calc_height_frame(space_top,space_bottom,dim_board);
+    height_floor    = calc_height_floor(height_chead,wall_frame);
+    height_top      = height_floor;
+    height_case     = calc_height_case(height_frame,height_top,height_floor);
+    height_cover    = calc_height_cover(height_case,height_bottom);
+
     height_inlay    = space_bottom;
     height_headspace = space_top;
-    //height_bottom   = space_bottom+height_floor-rim;
-    height_cover    = height_case-height_bottom;
+    
+
 
     wall_case       = max(dia_chead-wall_frame,wall_frame);
     dim_frame       = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
