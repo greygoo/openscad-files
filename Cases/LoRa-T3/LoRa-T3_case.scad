@@ -1,42 +1,40 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-part                = "case_cover";
-//part                = "case_inlay";
-//part                = "case_bottom";
+//part                = "case_all";
+//T3(part);
 
-wall                = 1.2;
-rim                 = 0.8;
-mki                 = 4;
+// Fixed values - do not change
+dim_t3_board        = [65,27,1.25];
+uppers_t3           = 5;
+lowers_t3           = 13;
+dia_t3_screws       = 2.3;
+loc_t3_screws       = [[2.6,1.45],
+                       [dim_t3_board[0]-2.6,3.2,0],
+                       [dim_t3_board[0]-2.6,dim_t3_board[1]-1.45,0],
+                       [2.6,dim_t3_board[1]-3.2,0]];
+cuts_t3             = [[[14.8,-8],[7.8,7.8],"front","rnd_indent"],  // antenna port
+                       [[2.75,0],[8,3],"left","sqr_indent"], // usb port
+                       [[13.4,0],[11.5,3],"left","sqr_indent"],  // sdcard/usb port
+                       [[40.8,-dim_t3_board[2]-2.1],[4.65,2.1],"back","sqr_cone"],  // reset
+                       [[49.5,-dim_t3_board[2]-4],[9.4,4],"back","sqr_cone"],// switch
+                       [[24.6,4.5],[25,17],"top","sqr"]]; //display
+space_t3_screws     = 1;
 
-T3(part);
-
-module T3(part){
-    // T3 LoRa frame values
-    dim_t3_board        = [65,27,1.25];
-    uppers_t3           = 5;
-    lowers_t3           = 12;
-    dia_t3_screws       = 2.3;
-    loc_t3_screws       = [[2.6,1.45],
-                           [dim_t3_board[0]-2.6,3.2,0],
-                           [dim_t3_board[0]-2.6,dim_t3_board[1]-1.45,0],
-                           [2.6,dim_t3_board[1]-3.2,0]];
-    cuts_t3             = [[[14.8,-8],[7.8,7.8],wall+rim+1,"front","rnd_indent"],  // antenna port
-                           [[2.75,0],[8,3],wall+rim+1,"left","sqr_indent"], // usb port
-                           [[13.4,0],[11.5,3],wall+rim+1,"left","sqr_indent"],  // sdcard/usb port
-                           [[40.8,-dim_t3_board[2]-2.1],[4.65,2.1],wall+rim+1,"back","sqr_button"],  // reset
-                           [[49.5,-dim_t3_board[2]-4],[9.4,4],wall+rim+1,"back","sqr_indent"],// switch
-                           [[24.6,4.5],[25,17],wall+rim+1,"top","sqr"]]; //display
-    space_t3_screws     = 1;
-    grow                = 4;
-    height_bottom       = 9;
-    dia_cscrew          = 2.3;
-    dia_chead           = 4.7;
-    height_chead        = 1.8;
-    text                = "TSM";
-    font                = "Source Sans Pro:style=Bold";
-    size_text           = 8;
-    loc_text            = [4.5,14.5];
+module T3(part                = "all_case",
+          dia_cscrew          = 2.3,
+          dia_chead           = 4.7,
+          height_chead        = 1.8,
+          text                = "TSM",
+          font                = "Source Sans Pro:style=Bold",
+          size_text           = 8,
+          loc_text            = [4.5,14.5],
+          wall                = 1.2,
+          rim                 = 0.8,
+          port_length         = 4.8,
+          mki                 = 4,
+          grow                = 4,
+          height_bottom       = 11){
 
 
 
