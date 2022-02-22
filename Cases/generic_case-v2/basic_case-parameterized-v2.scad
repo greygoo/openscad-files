@@ -25,7 +25,6 @@ loc_bscrews      = [[3.5,3.5],
 dia_cscrew       = 3;
 dia_chead        = 5.5;
 height_chead     = 2.5;
-height_cscrew    = 15;
                     
 // Case values
 wall_frame       = 1.2;
@@ -58,7 +57,6 @@ case(part=case_part,
      dia_cscrew=dia_cscrew,
      dia_chead=dia_chead,
      height_chead=height_chead,
-     height_cscrew=height_cscrew,
      
      dia_bscrew=dia_bscrew,
      loc_bscrews=loc_bscrews);*/
@@ -86,8 +84,7 @@ module case(part="frame", // which part to render
             dia_cscrew = 3.3, // case screw values
             dia_chead = 5.5,
             height_chead = 3,
-            height_cscrew = 15,
-            height_bottom = 5, // height of bottom case part
+            height_bottom = 10, // height of bottom case part
             
             text = "TSM",
             font = "Liberation Sans:style=Bold Italic",
@@ -110,7 +107,7 @@ module case(part="frame", // which part to render
     //height_bottom   = space_bottom+height_floor-rim;
     height_cover    = height_case-height_bottom;
 
-    wall_case       = dia_chead-wall_frame;
+    wall_case       = max(dia_chead-wall_frame,wall_frame);
     dim_frame       = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
     dim_case        = dim_frame+[2*wall_case,2*wall_case,height_case];
     
@@ -147,7 +144,14 @@ module case(part="frame", // which part to render
         case_bottom();
         case_cover();
         case_inlay();
-
+    }
+    
+    if(part=="case_shape"){
+        cube_round_xy([dim_case[0],dim_case[1],height_case],mki);
+    }
+    
+    if(part=="cutout_shape"){
+        cutouts_case();
     }
     
     /////////////////////////////////////////////////////////////
@@ -186,14 +190,6 @@ module case(part="frame", // which part to render
             cutout_case_screws();
             cutout_font();
         }    
-    }
-    
-    module cutouts_case(){
-        translate([wall_case,wall_case,height_floor]){
-            cutout_frame_bottom();
-            cutout_frame_cover();
-            cutout_ports();
-        }
     }
     
     module bottom(){
@@ -262,6 +258,15 @@ module case(part="frame", // which part to render
     /////////////////////////////////////////////////////////////
     // Cutout modules
     /////////////////////////////////////////////////////////////
+    
+    module cutouts_case(){
+        translate([wall_case,wall_case,height_floor]){
+            cutout_frame_bottom();
+            cutout_frame_cover();
+            cutout_ports();
+        }
+    }
+    
     // Create cutout in case for adding bottom frame part
     //cutout_frame_bottom();
     module cutout_frame_bottom(){
@@ -294,8 +299,8 @@ module case(part="frame", // which part to render
     
     // Create cutout font on cover
     module cutout_font(){
-        translate([loc_text[0],loc_text[1],height_case-1]){
-            linear_extrude(1){
+        translate([loc_text[0],loc_text[1],height_case-wall_case/2]){
+            linear_extrude(wall_case/2){
                 text(text=text,font=font,size=size_text,valign="bottom",halign="left");
             }
         }
