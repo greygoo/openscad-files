@@ -1,7 +1,7 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-//part                = "case_cover";
+//part                = "case_all";
 
 // Render
 //bat(part);
@@ -14,11 +14,11 @@ loc_bat_screws       = [[2.8,6.6],
                        [dim_bat_board[0]-1.8,7.2,0],
                        [dim_bat_board[0]-1.8,dim_bat_board[1]-8.2],
                        [2.8,dim_bat_board[1]-8.5,0]];
-cuts_bat             = [[[7.6,-6],[7.6,4],"front","sqr_indent"],  // button
-                       [[7,0],[9,3.45],"back","sqr_indent"], // usb-c
-                       [[20.7,0],[7.75,2.95],"back","sqr_indent"],  // usb
-                       [[83.5,-6.5],[9,4],"back","sqr_indent"], // switch
-                       [[18,-8],[13.2,5.8],"left","sqr_indent"]]; // big usb
+cuts_bat             = [[[7.6,-6],[7.6,4],"back","sqr_indent"],  // button
+                       [[7,0],[9,3.45],"front","sqr_indent"], // usb-c
+                       [[20.7,0],[7.75,2.95],"front","sqr_indent"],  // usb
+                       [[83.5,-6.5],[9,4],"front","sqr_indent"], // switch
+                       [[18,-8],[13.2,5.8],"right","sqr_indent"]]; // big usb
 space_bat_screws     = 2;
 
 module bat(part                = "case_all",
