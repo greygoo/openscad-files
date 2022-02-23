@@ -75,6 +75,14 @@ function calc_height_frame(space_top,
                            
 function calc_height_floor(height_chead,wall_frame) = max(height_chead+wall_frame,wall_frame);
 function calc_height_cover(height_case,height_bottom) = height_case-height_bottom;
+function calc_dim_case(dim_frame,
+                       wall_case,
+                       height_case) = dim_frame+[2*wall_case,2*wall_case,height_case];
+function calc_wall_case(dia_chead,wall_frame) = max(dia_chead-wall_frame,wall_frame);
+function calc_dim_frame(dim_board,
+                        wall_frame,
+                        rim,
+                        height_frame) = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
      
 // case module
 module case(part="frame", // which part to render
@@ -109,12 +117,6 @@ module case(part="frame", // which part to render
                                 //starting left lower corner, counterclockwise)  
 {
     // calculate values;
-//    height_bscrew   = space_bottom-height_bhead;
-//    height_frame    = space_top+space_bottom+dim_board[2]; // height of case without bottom/cover
-//    height_floor    = height_chead+1;
-//    height_top      = height_chead+1;
-//    height_cover    = height_case-height_bottom;
-//    height_case     = height_frame+height_top+height_floor;
     height_bscrew   = calc_height_bscrew(space_bottom,height_bhead);
     height_frame    = calc_height_frame(space_top,space_bottom,dim_board);
     height_floor    = calc_height_floor(height_chead,wall_frame);
@@ -125,12 +127,10 @@ module case(part="frame", // which part to render
     height_inlay    = space_bottom;
     height_headspace = space_top;
     
+    wall_case       = calc_wall_case(dia_chead,wall_frame);
+    dim_frame       = calc_dim_frame(dim_board,wall_frame,rim,height_frame);
+    dim_case        = calc_dim_case(dim_frame,wall_case,height_case);    
 
-
-    wall_case       = max(dia_chead-wall_frame,wall_frame);
-    dim_frame       = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
-    dim_case        = dim_frame+[2*wall_case,2*wall_case,height_case];
-    
     loc_cscrews     = [[dia_chead/2,dia_chead/2-0.36844],
                        [dim_case[0]-dia_chead/2,dia_chead/2-0.36844],
                        [dim_case[0]-dia_chead/2,dim_case[1]-dia_chead/2+0.36844],
