@@ -77,12 +77,16 @@ function calc_height_floor(height_chead,wall_frame) = max(height_chead+wall_fram
 function calc_height_cover(height_case,height_bottom) = height_case-height_bottom;
 function calc_dim_case(dim_frame,
                        wall_case,
-                       height_case) = dim_frame+[2*wall_case,2*wall_case,height_case];
+                       height_case) = [dim_frame[0]+2*wall_case,
+                                       dim_frame[1]+2*wall_case,
+                                       height_case];
 function calc_wall_case(dia_chead,wall_frame) = max(dia_chead-wall_frame,wall_frame);
 function calc_dim_frame(dim_board,
                         wall_frame,
                         rim,
-                        height_frame) = dim_board+[2*(wall_frame+rim),2*(wall_frame+rim),height_frame];
+                        height_frame) = [dim_board[0]+2*(wall_frame+rim),
+                                         dim_board[1]+2*(wall_frame+rim),
+                                         height_frame];
      
 // case module
 module case(part="frame", // which part to render
@@ -118,18 +122,25 @@ module case(part="frame", // which part to render
 {
     // calculate values;
     height_bscrew   = calc_height_bscrew(space_bottom,height_bhead);
-    height_frame    = calc_height_frame(space_top,space_bottom,dim_board);
-    height_floor    = calc_height_floor(height_chead,wall_frame);
-    height_top      = height_floor;
-    height_case     = calc_height_case(height_frame,height_top,height_floor);
-    height_cover    = calc_height_cover(height_case,height_bottom);
-
+    
     height_inlay    = space_bottom;
     height_headspace = space_top;
+    height_floor    = calc_height_floor(height_chead,wall_frame);
+    height_top      = height_floor;
+    
+    height_frame    = calc_height_frame(space_top,space_bottom,dim_board);
+    echo("dim_board: ",dim_board);
+    echo("wall_frame: ",wall_frame);
+    echo("rim: ",rim);
+    echo("height_frame", height_frame);
+    dim_frame       = calc_dim_frame(dim_board,wall_frame,rim,height_frame);
+    echo("dim_frame: ",dim_frame);
     
     wall_case       = calc_wall_case(dia_chead,wall_frame);
-    dim_frame       = calc_dim_frame(dim_board,wall_frame,rim,height_frame);
-    dim_case        = calc_dim_case(dim_frame,wall_case,height_case);    
+    height_case     = calc_height_case(height_frame,height_top,height_floor);
+    dim_case        = calc_dim_case(dim_frame,wall_case,height_case);
+    
+    height_cover    = calc_height_cover(height_case,height_bottom);    
 
     loc_cscrews     = [[dia_chead/2,dia_chead/2-0.36844],
                        [dim_case[0]-dia_chead/2,dia_chead/2-0.36844],
@@ -146,6 +157,7 @@ module case(part="frame", // which part to render
     
     if(part=="frame"){
         frame();
+        //#cube_round_xy(dim_frame,mki);
     }
     
     if(part=="case_inlay"){
@@ -180,9 +192,13 @@ module case(part="frame", // which part to render
     
     module case_inlay(){
         translate([wall_case,wall_case,height_floor]){
-            frame(height=space_bottom);
+            difference(){
+                frame();
+                translate([0,0,space_bottom]){
+                    cube_round_xy(dim_frame,mki);
+                }
+            }
         }
-        
     }
     
     module case_bottom(){
@@ -223,10 +239,10 @@ module case(part="frame", // which part to render
         }
     }
     
-    module frame(height=height_frame){
+    module frame(){
         difference(){
             union(){
-                outer_frame(height=height);
+                outer_frame();
                 inner_frame();
             }
             cutout_ports();
@@ -243,9 +259,9 @@ module case(part="frame", // which part to render
         board_screws();
     }
        
-    module outer_frame(height=dim_frame[2]){
+    module outer_frame(){
         difference(){
-            cube_round_xy([dim_frame[0],dim_frame[1],height],mki);
+            cube_round_xy(dim_frame,mki);
             cutout_board();
         }
     }
@@ -282,7 +298,7 @@ module case(part="frame", // which part to render
     module cutouts_case(){
         translate([wall_case,wall_case,height_floor]){
             cutout_frame_bottom();
-            #cutout_frame_cover();
+            cutout_frame_cover();
             cutout_ports();
         }
     }
@@ -313,7 +329,7 @@ module case(part="frame", // which part to render
     //cutout_board();
     module cutout_board(){
         translate([wall_frame,wall_frame,0]){
-            cube([dim_board[0]+2*rim,dim_board[1]+2*rim,height_frame]);
+            cube([dim_board[0]+2*rim,dim_board[1]+2*rim,dim_frame[2]]);
         }
     }
     
