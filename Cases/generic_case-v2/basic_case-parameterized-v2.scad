@@ -98,6 +98,7 @@ module case(part="frame", // which part to render
             gap=0.3,
             grow=2,
             port_length,
+            port_extend=30,
             
             dim_board,     // board dimension (without components)
             cuts,      // location of port openings ()
@@ -116,7 +117,9 @@ module case(part="frame", // which part to render
             size_text = 20,
      
             dia_bscrew=3,       // screw diameter
-            height_bhead=2.4, 
+            height_bhead=2.4,
+            render_floor=true,
+            render_top=true,
             loc_bscrews)        // screw locations (array of [x,y] pairs, 
                                 //starting left lower corner, counterclockwise)  
 {
@@ -165,11 +168,28 @@ module case(part="frame", // which part to render
     }
     
     if(part=="case_bottom"){
-        case_bottom();
+        if(render_floor==false){
+            difference(){
+                case_bottom();
+                part_floor_frame();
+            }
+        }
+        else {
+            case_bottom();
+        }
     }
     
     if(part=="case_cover"){
-        case_cover();
+        echo("render_top: ",render_top);
+        if(render_top==false){
+            difference(){
+                case_cover();
+                part_top_frame();
+            }
+        }
+        else {   
+            case_cover();
+        }
     }
     
     if(part=="case_all"){
@@ -236,6 +256,18 @@ module case(part="frame", // which part to render
     module cover(){
         translate([0,0,height_bottom]){
             cube_round_xy([dim_case[0],dim_case[1],height_cover],mki);
+        }
+    }
+    
+    module part_top_frame(){
+        translate([wall_case+rim+wall_frame,wall_case+rim+wall_frame,height_case-height_top]){
+            cube_round_xy([dim_board[0],dim_board[1],height_top],mki);
+        }
+    }
+        
+    module part_floor_frame(){
+        translate([wall_case+rim+wall_frame,wall_case+rim+wall_frame,0]){
+            cube_round_xy([dim_board[0],dim_board[1],height_floor],mki);
         }
     }
     
@@ -362,8 +394,10 @@ module case(part="frame", // which part to render
         translate([wall_frame+rim,wall_frame+rim,space_bottom]){
             make_cuts_v2(dim=dim_board,
                          cuts=cuts,
+                         //length=port_length,
                          length=4*wall_frame+4*rim,
-                         extend=height_cover,
+                         //extend=height_cover,
+                         extend=port_extend,
                          move=-rim-wall_frame-wall_frame/2,
                          grow=grow);
         }
