@@ -40,16 +40,13 @@ dim_t3_frame=calc_dim_frame(dim_t3_board,wall_frame,rim,height_t3_frame);
 dim_t3_case=calc_dim_case(dim_t3_frame,wall_frame,height_t3_case);
 
 
+//////////////////////////////////////////
+// render
 
-part_bat(part="case_all");
-offset_pi_case(){
-    part_pi(part="case_all");
-}
-offset_t3_case(){
-    part_t3(part="case_all");
-}
-filler_pi_case();
-filler_t3_case();
+//shape_cases();
+cases();
+
+
 //////////////////////////////////////////
 // frames
 
@@ -89,6 +86,18 @@ module offset_t3_frame() {
 //////////////////////////////////////////
 // cases
 
+module cases(){
+    part_bat(part="case_cover");
+    offset_pi_case(){
+        part_pi(part="case_all");
+    }
+    offset_t3_case(){
+        part_t3(part="case_all");
+    }
+    filler_pi_case();
+    filler_t3_case();
+}
+
 module filler_pi_case(){
     translate([0,dim_pi_case[1],0]){
         offset_pi_case(){
@@ -122,6 +131,27 @@ module offset_t3_case() {
            height_bat_case+height_pi_case+0]) children();
 }
 
+
+////////////////////////////////////////////
+// cutout shapes
+
+
+module shape_cases(){
+    cube_round_xy(dim_bat_case,mki);
+    offset_pi_case(){
+        cube_round_xy(dim_pi_case,mki);
+    }
+    offset_t3_case(){
+        cube_round_xy(dim_t3_case,mki);
+    }
+    filler_pi_case();
+    filler_t3_case();
+}
+
+module shape_ports(){
+    
+}
+
 ////////////////////////////////////////////
 // imported part modules with static values
 
@@ -133,7 +163,9 @@ module part_bat(part){
         height_bottom=6,
         mki=mki,
         wall=wall_frame,
-        rim=rim);
+        rim=rim,
+        render_top=false,
+        render_floor=false);
 }
 
 module part_pi(part){

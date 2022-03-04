@@ -31,7 +31,7 @@ module T3(part                = "all_case",
           loc_text            = [4.5,14.5],
           wall                = 1.2,
           rim                 = 0.8,
-          port_length         = 4.8,
+          port_length         = 30,
           mki                 = 4,
           grow                = 4,
           height_bottom       = 11){
@@ -57,5 +57,6 @@ module T3(part                = "all_case",
          text=text,
          size_text=size_text,
          loc_text=loc_text,
-        font=font);
+         font=font,
+         port_length=port_length);
 }

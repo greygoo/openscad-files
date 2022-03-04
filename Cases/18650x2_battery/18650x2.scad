@@ -34,7 +34,9 @@ module bat(part                = "case_all",
            wall                = 1.2,
            rim                 = 0.8,
            mki                 = 4,
-           port_length         = 4.8){
+           port_length         = 4.8,
+           render_floor        = true,
+           render_top          = true){
     
     case(part=part,
          dim_board=dim_bat_board,
@@ -56,5 +58,7 @@ module bat(part                = "case_all",
          text=text,
          size_text=size_text,
          loc_text=loc_text,
-         font=font);
+         font=font,
+         render_floor=render_floor,
+         render_top=render_top);
 }
