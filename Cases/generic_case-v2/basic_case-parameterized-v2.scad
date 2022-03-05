@@ -98,7 +98,7 @@ module case(part="frame", // which part to render
             gap=0.3,
             grow=2,
             port_length,
-            port_extend=30,
+            port_extend=10,
             
             dim_board,     // board dimension (without components)
             cuts,      // location of port openings ()
@@ -118,8 +118,8 @@ module case(part="frame", // which part to render
      
             dia_bscrew=3,       // screw diameter
             height_bhead=2.4,
-            render_floor=true,
-            render_top=true,
+            render_floor=1,
+            render_top=1,
             loc_bscrews)        // screw locations (array of [x,y] pairs, 
                                 //starting left lower corner, counterclockwise)  
 {
@@ -168,34 +168,17 @@ module case(part="frame", // which part to render
     }
     
     if(part=="case_bottom"){
-        if(render_floor==false){
-            difference(){
-                case_bottom();
-                part_floor_frame();
-            }
-        }
-        else {
-            case_bottom();
-        }
+        case_bottom();
     }
     
     if(part=="case_cover"){
-        echo("render_top: ",render_top);
-        if(render_top==false){
-            difference(){
-                case_cover();
-                part_top_frame();
-            }
-        }
-        else {   
-            case_cover();
-        }
+        case_cover();
     }
     
     if(part=="case_all"){
         case_bottom();
         case_cover();
-        case_inlay();
+        //case_inlay();
     }
     
     if(part=="case_shape"){
@@ -222,30 +205,54 @@ module case(part="frame", // which part to render
     }
     
     module case_bottom(){
-        difference(){
-            bottom();
-            cutouts_case();
-            cutout_case_screws();
+        module _bottom(){
+            difference(){
+                bottom();
+                cutouts_case();
+                cutout_case_screws();
+            }
+        }
+        
+        if(render_floor==0){
+            difference(){
+                _bottom();
+                part_floor_frame();
+            }
+        }
+        else {
+            _bottom();
         }
     }
     
     module case_cover(){
-        difference(){
-            union(){
-                difference(){
-                    cover();
-                    cutouts_case();
-                }
-                difference(){
-                    translate([wall_case,wall_case,height_floor]){
-                        frame();
+        module _cover(){
+            difference(){
+                union(){
+                    difference(){
+                        cover();
+                        cutouts_case();
                     }
-                    case_inlay();
+                    difference(){
+                        translate([wall_case,wall_case,height_floor]){
+                            frame();
+                        }
+                        case_inlay();
+                    }
                 }
+                cutout_case_screws();
+                cutout_font();
             }
-            cutout_case_screws();
-            cutout_font();
-        }    
+        }
+         
+        if(render_top==0){
+            difference(){
+                _cover();
+                part_top_frame();
+            }
+        }
+        else {   
+            _cover();
+        }
     }
     
     module bottom(){
