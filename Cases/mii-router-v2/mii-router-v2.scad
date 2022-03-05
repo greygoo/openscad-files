@@ -77,6 +77,7 @@ translate([0,0,20])
 translate([0,0,10])
     middle();
 bottom();
+
 module top(){
     difference(){
         case_all();
@@ -106,7 +107,7 @@ module case_all(){
     difference(){
         hull(){
             cases();
-            shape_screws(extend=0);
+            shape_screws(extend=0,bottom_fn=32);
         }
         shape_cases();
         shape_ports();
@@ -125,7 +126,7 @@ module case_all(){
 // seperation cubes
 dim_sep=[200,200];
 height_sep_bottom = 20;
-height_sep_middle = 15;
+height_sep_middle = 14;
 height_sep_top    = 20;
 
 
@@ -207,6 +208,7 @@ height_screws_1=dim_bat_case[2];
 height_screws_2=dim_bat_case[2]+dim_pi_case[2];
 height_screws_3=dim_bat_case[2]+dim_t3_case[2];
 height_screws_4=dim_t3_case[2];
+height_screws_5=height_sep_bottom+height_sep_middle+2*height_chead;
 
 dim_case=[dim_bat_case[0],
           dim_bat_case[1],
@@ -218,16 +220,16 @@ loc_corner_cuts_2 = [[dim_case[0],0]];
 loc_corner_cuts_3 = [[0,dim_case[1]]];
 loc_corner_cuts_4 = [[0,dim_bat_case[1]+dim_pi_case[1]]];
 
-loc_cscrews_1     = [[-wall_frame,-wall_frame-0.36844],
-                     [dim_case[0]+wall_frame,dim_case[1]+0.36844+wall_frame]];
-loc_cscrews_2     = [[dim_case[0]+wall_frame,-wall_frame-0.36844]];
+loc_cscrews_1     = [[dim_case[0]+wall_frame,dim_case[1]+0.36844+wall_frame]];
+loc_cscrews_2     = [[dim_case[0]+wall_frame,-wall_frame-0.36844],
+                     [dim_case[0]+wall_frame,dim_pi_case[1]+wall_frame]];
 loc_cscrews_3     = [[-wall_frame,dim_case[1]+0.36844+wall_frame]];
 loc_cscrews_4     = [[-wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame],
                     [dim_t3_case[0]+wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame]];
+loc_cscrews_5     = [[-wall_frame,-wall_frame-0.36844]];
                    
 module shape_screws(extend){
     cutout_case_screws(loc_screws=loc_cscrews_1,
-                       loc_corner=loc_corner_cuts_1,
                        dia_screw=dia_cscrew,
                        dia_head=dia_chead,
                        height_head=height_chead,
@@ -235,7 +237,6 @@ module shape_screws(extend){
                        extend=extend);
 
     cutout_case_screws(loc_screws=loc_cscrews_2,
-                       loc_corner=loc_corner_cuts_2,
                        dia_screw=dia_cscrew,
                        dia_head=dia_chead,
                        height_head=height_chead,
@@ -243,7 +244,6 @@ module shape_screws(extend){
                        extend=extend);
                        
     cutout_case_screws(loc_screws=loc_cscrews_3,
-                       loc_corner=loc_corner_cuts_3,
                        dia_screw=dia_cscrew,
                        dia_head=dia_chead,
                        height_head=height_chead,
@@ -252,28 +252,46 @@ module shape_screws(extend){
                        
     translate([0,0,dim_bat_case[2]]){
         cutout_case_screws(loc_screws=loc_cscrews_4,
-                           loc_corner=loc_corner_cuts_4,
                            dia_screw=dia_cscrew,
                            dia_head=dia_chead,
                            height_head=height_chead,
                            height_screws=height_screws_4,
                            extend=extend);
     }
+    
+    cutout_case_screws(loc_screws=loc_cscrews_5,
+                       dia_screw=dia_cscrew,
+                       dia_head=dia_chead,
+                       height_head=height_chead,
+                       height_screws=height_screws_5,
+                       extend=extend);
 }
-                   
+
+module cutout_case_corners(loc_corners,
+                           size,
+                           height,
+                           height_head,
+                           extend)
+{
+    screw_holes(loc=loc_corners,dia=size,h=height+extend);
+    translate([0,0,height-height_head]){
+        screw_holes(loc=loc_corners,dia=size,h=height);
+    }
+}
+
 module cutout_case_screws(loc_screws,
-                          loc_corner,
                           dia_screws,
                           dia_head,
                           height_screws,
-                          extend=0){
+                          extend=0,
+                          bottom_fn=6){
     translate([0,0,-extend]){
         // cut out screw holes
         screw_holes(loc=loc_screws,dia=dia_screws,h=height_screws+extend);
         // cut out screw heads bottom
-        screw_holes(loc=loc_screws,dia=dia_head,h=height_head+extend,fn=6);
+        screw_holes(loc=loc_screws,dia=dia_head,h=height_head+extend,fn=bottom_fn);
         // cut of corners
-        // screw_holes(loc=loc_corner,dia=dia_head,h=height_head+extend);
+        //screw_holes(loc=loc_corner,dia=dia_head,h=height_head+extend);
         // cut out screw heads top
     }
     translate([0,0,height_screws-height_head]){
