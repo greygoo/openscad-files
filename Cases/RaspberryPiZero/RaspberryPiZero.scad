@@ -18,8 +18,8 @@ cuts_pi             = [[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"], 
                        [[47,-dim_pi_board[2]-3.4],[11.3,3.4],"front","sqr_indent"],  // mini hdmi
                        [[11.3,-dim_pi_board[2]-3+0.7],[11.8,6],"right","sqr_indent"],  // SD
                        [[6.6,-dim_pi_board[2]-2.2],[16.7,2.2],"left","sqr_indent"], // cam
-                       //[[6.5,23.5],[51,5.5],"top","sqr"]
-                       ]; // gpio header
+                       //[[6.5,23.5],[51,5.5],"top","sqr"] // gpio header
+                       ];
 space_pi_screws     = 2;
 
 module RaspberryPiZero(part="case_all",
@@ -35,7 +35,10 @@ module RaspberryPiZero(part="case_all",
                        port_length = 4.8,
                        mki = 4,
                        grow = 4.5,
-                       height_bottom = 4.8){              
+                       height_bottom = 4.8,
+                       render_floor = 1,
+                       render_top = 1,
+                       port_extend=20){              
                
     case(part=part,
          dim_board=dim_pi_board,
@@ -57,5 +60,8 @@ module RaspberryPiZero(part="case_all",
          text=text,
          size_text=size_text,
          loc_text=loc_text,
-         font=font);
+         font=font,
+         render_floor=render_floor,
+         render_top=render_top,
+         port_extend=port_extend);
 }
