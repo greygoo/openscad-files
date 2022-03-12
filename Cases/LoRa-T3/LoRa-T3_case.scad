@@ -1,8 +1,8 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-//part                = "case_all";
-//T3(part);
+//part                = "case_inlay";
+//T3(part=part,cuts=cuts_t3);
 
 // Fixed values - do not change
 dim_t3_board        = [65,27,1.25];
@@ -36,7 +36,8 @@ module T3(part                = "all_case",
           grow                = 4,
           height_bottom       = 11,
           render_floor        = 1,
-          render_top          = 1){
+          render_top          = 1,
+          cuts){
 
 
 
@@ -47,7 +48,7 @@ module T3(part                = "all_case",
          dia_bscrew=dia_t3_screws,
          space_bscrew=space_t3_screws,     
          loc_bscrews=loc_t3_screws,
-         cuts=cuts_t3,
+         cuts=cuts,
          wall_frame=wall,
          rim=rim,
          grow=grow,

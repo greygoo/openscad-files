@@ -6,23 +6,32 @@ wall_frame=1.2;
 rim=0.8;
 mki=0.5;
 lowers_t3=5;
+uppers_pi=4;
+dia_cscrews=3.5;
+dia_chead=5.5;
+height_chead=3;
 
 offset_pi_y=0;
 offset_t3_x=0;
 offset_t3_y=0;
 
+dim_sep=[200,200];
+height_sep_bottom = 20;
+height_sep_middle = 14;
+height_sep_top    = 20;
+
 // override pi ports
-cuts_pi             = [//[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"],  // usb1
+cuts_pi_case         = [//[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"],  // usb1
                        //[[19.5,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"], // usb2
                        //[[47,-dim_pi_board[2]-3.4],[11.3,3.4],"front","sqr_indent"],  // mini hdmi
                        [[11.3,-dim_pi_board[2]-3+0.7],[11.8,6],"right","sqr_indent"],  // SD
                        //[[6.6,-dim_pi_board[2]-2.2],[16.7,2.2],"left","sqr_indent"], // cam
                        //[[6.5,23.5],[51,5.5],"top","sqr"] // gpio header
-                       [[2,-10],[23,10],"left","sqr"], // con t3
+                       [[2,-dim_pi_board[2]-4.4],[23,8],"left","sqr"], // con t3
                        ];
                        
 // override t3 ports
-cuts_t3             = [[[14.8,-8],[7.8,7.8],"front","rnd_indent"],  // antenna port
+cuts_t3_case          = [[[14.8,-8],[7.8,7.8],"front","rnd_indent"],  // antenna port
                        [[5,5],[60,20],"bottom","sqr"], //space below antenna
                        //[[2.75,0],[8,3],"left","sqr_indent"], // usb port
                        //[[13.4,0],[11.5,3],"left","sqr_indent"],  // sdcard/usb port
@@ -32,34 +41,35 @@ cuts_t3             = [[[14.8,-8],[7.8,7.8],"front","rnd_indent"],  // antenna p
                        [[24.6,4.5],[25,17],"top","sqr"]]; //display
                        
 // override battery ports
-cuts_bat             = [[[7.6,-6],[7.6,4],"front","sqr_indent"],  // button
+cuts_bat_case         = [[[7.6,-6],[7.6,4],"front","sqr_indent"],  // button
                        [[7,0],[9,3.45],"back","sqr_indent"], // usb-c
                        //[[20.7,0],[7.75,2.95],"back","sqr_cone"],  // usb
                        //[[83.5,-6.5],[9,4],"back","sqr_indent"], // switch
                        //[[18,-8],[13.2,5.8],"left","sqr_indent"] // big usb
                        ];
                        
-
+cuts_bat              = [[[7.6,-6],[7.6,4],"front","sqr_indent"],  // button
+                       [[7,0],[9,3.45],"back","sqr_indent"], // usb-c
+                       [[20.7,0],[7.75,2.95],"back","sqr_cone"],  // usb
+                       [[83.5,-6.5],[9,4],"back","sqr_indent"], // switch
+                       [[18,-8],[13.2,5.8],"left","sqr_indent"] // big usb
+                       ];
+                       
+// case values
 height_bat_frame=calc_height_frame(uppers_bat,lowers_bat,dim_bat_board);
 height_bat_case=calc_height_case(height_frame=height_bat_frame,
                                  height_top=wall_frame,
                                  height_floor=wall_frame);
-echo("dim_bat_board: ",dim_bat_board);
-echo("wall_frame: ",wall_frame);
-echo("rim: ",rim);
-echo("height_bat_frame", height_bat_frame);
 dim_bat_frame=calc_dim_frame(dim_bat_board,wall_frame,rim,height_bat_frame);
-echo("dim_bat_frame: ",dim_bat_frame);
 dim_bat_case=calc_dim_case(dim_bat_frame,wall_frame,height_bat_case);
 
 height_pi_frame=calc_height_frame(uppers_pi,lowers_pi,dim_pi_board);
 height_pi_case=calc_height_case(height_frame=height_pi_frame,
                                  height_top=wall_frame,
                                  height_floor=wall_frame);
-echo("height_pi_case: ",height_pi_case);
 dim_pi_frame=calc_dim_frame(dim_pi_board,wall_frame,rim,height_pi_frame);
 dim_pi_case=calc_dim_case(dim_pi_frame,wall_frame,height_pi_case);
-echo("dim_pi_case: ",dim_pi_case);
+
 height_t3_frame=calc_height_frame(uppers_t3,lowers_t3,dim_t3_board);
 height_t3_case=calc_height_case(height_frame=height_t3_frame,
                                  height_top=wall_frame,
@@ -67,16 +77,44 @@ height_t3_case=calc_height_case(height_frame=height_t3_frame,
 dim_t3_frame=calc_dim_frame(dim_t3_board,wall_frame,rim,height_t3_frame);
 dim_t3_case=calc_dim_case(dim_t3_frame,wall_frame,height_t3_case);
 
+// screw values
+height_screws_1=dim_bat_case[2];
+height_screws_2=dim_bat_case[2]+dim_pi_case[2];
+height_screws_3=dim_bat_case[2]+dim_t3_case[2];
+height_screws_4=dim_t3_case[2]+height_chead;
+height_screws_5=height_sep_bottom+height_sep_middle+2*height_chead;
+
+dim_case=[dim_bat_case[0],
+          dim_bat_case[1],
+          dim_bat_case[2]+dim_t3_case[2]];
+
+
+loc_cscrews_1     = [[dim_case[0]+wall_frame,dim_case[1]+0.36844+wall_frame]];
+loc_cscrews_2     = [[dim_case[0]+wall_frame,-wall_frame-0.36844],
+                     [dim_case[0]+wall_frame+dia_chead/2,dim_pi_case[1]+wall_frame]];
+loc_cscrews_3     = [[-wall_frame,dim_case[1]+0.36844+wall_frame]];
+loc_cscrews_4     = [[-wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame],
+                    [dim_t3_case[0]+wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame]];
+loc_cscrews_5     = [[-wall_frame,-wall_frame-0.36844]];
+
 
 //////////////////////////////////////////
 // render
 
-translate([0,0,20])
+translate([0,0,60])
     top();
 
-translate([0,0,10])
+translate([0,0,30])
     middle();
 bottom();
+
+//frame
+//part_bat(part="case_inlay",cuts=cuts_bat);
+//part_t3(part="case_inlay",cuts=cuts_t3);
+//part_pi(part="case_inlay",cuts=cuts_pi);
+
+///////////////////////////////////////////
+// case parts
 
 module top(){
     difference(){
@@ -102,85 +140,39 @@ module bottom(){
     }
 }
 
-//shape_cases();
 module case_all(){
     difference(){
         hull(){
             cases();
-            shape_screws(extend=0,bottom_fn=32);
+            shape_screws_all(extend=0,bottom_fn=32);
         }
         shape_cases();
         shape_ports();
-        shape_screws(extend=10);
+        shape_screws_all(extend=10,bottom_fn=6);
+        shape_connection();
+        
     }
     difference(){
         cases();
-        shape_screws(extend=0);
+        //shape_ports();
+        shape_screws_all(extend=0,bottom_fn=6);
     }
 }
 
-//#shape_cases();
-//cases();
-//shape_ports();
-
-// seperation cubes
-dim_sep=[200,200];
-height_sep_bottom = 20;
-height_sep_middle = 14;
-height_sep_top    = 20;
-
-
-module sep_bottom(){
-    translate([-20,-20,0])
-   cube([dim_sep[0],dim_sep[1],height_sep_bottom]);
-}
-
-module sep_middle(){
-    translate([-20,-20,height_sep_bottom]){
-        cube([dim_sep[0],dim_sep[1],height_sep_middle]);
-    }
-}
-
-module sep_top(){
-    translate([-20,-20,height_sep_bottom+height_sep_middle]){
-        cube([dim_sep[0],dim_sep[1],height_sep_top]);
-    }
-}
 
 //////////////////////////////////////////
 // cases
 
 module cases(){
-    part_bat(part="case_all");
+    part_bat(part="case_all",cuts=cuts_bat_case);
     place_pi_case(){
-        part_pi(part="case_all");
+        part_pi(part="case_all",cuts=cuts_pi_case);
     }
     place_t3_case(){
-        part_t3(part="case_all");
+        part_t3(part="case_all",cuts=cuts_t3_case);
     }
-    //filler_pi_case();
-    //filler_t3_case();
 }
 
-//module filler_pi_case(){
-//    translate([0,dim_pi_case[1],0]){
-//        place_pi_case(){
-//            cube_round_xy([dim_pi_case[0],
-//                           dim_bat_case[1]-dim_pi_case[1]-offset_pi_y,
-//                           dim_pi_case[2]],mki);
-//        }
-//    }
-//}
-//
-//module filler_t3_case(){
-//    translate([0,dim_t3_case[1],0]){
-//        place_t3_case(){
-//            cube_round_xy([dim_t3_case[0],
-//                           dim_bat_case[1]-dim_t3_case[1]-offset_t3_y,
-//                           dim_t3_case[2]],mki);
-//        }
-//    }
-//}
 
 module place_pi_case() {
     translate([dim_bat_case[0]-dim_pi_case[0],
@@ -199,104 +191,66 @@ module place_t3_case() {
 
 ////////////////////////////////////////////
 // shapes
-
-// Create cutout for case screws
-dia_cscrew=3.4;
-dia_chead=4.7;
-height_chead=1.8;
-height_screws_1=dim_bat_case[2];
-height_screws_2=dim_bat_case[2]+dim_pi_case[2];
-height_screws_3=dim_bat_case[2]+dim_t3_case[2];
-height_screws_4=dim_t3_case[2];
-height_screws_5=height_sep_bottom+height_sep_middle+2*height_chead;
-
-dim_case=[dim_bat_case[0],
-          dim_bat_case[1],
-          dim_bat_case[2]+dim_t3_case[2]];
-
-loc_corner_cuts_1 = [[0,0],
-                     [dim_case[0],dim_case[1]]];
-loc_corner_cuts_2 = [[dim_case[0],0]];
-loc_corner_cuts_3 = [[0,dim_case[1]]];
-loc_corner_cuts_4 = [[0,dim_bat_case[1]+dim_pi_case[1]]];
-
-loc_cscrews_1     = [[dim_case[0]+wall_frame,dim_case[1]+0.36844+wall_frame]];
-loc_cscrews_2     = [[dim_case[0]+wall_frame,-wall_frame-0.36844],
-                     [dim_case[0]+wall_frame,dim_pi_case[1]+wall_frame]];
-loc_cscrews_3     = [[-wall_frame,dim_case[1]+0.36844+wall_frame]];
-loc_cscrews_4     = [[-wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame],
-                    [dim_t3_case[0]+wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame]];
-loc_cscrews_5     = [[-wall_frame,-wall_frame-0.36844]];
                    
-module shape_screws(extend){
-    cutout_case_screws(loc_screws=loc_cscrews_1,
-                       dia_screw=dia_cscrew,
-                       dia_head=dia_chead,
-                       height_head=height_chead,
-                       height_screws=height_screws_1,
-                       extend=extend);
+module shape_screws_all(extend,bottom_fn=32){
+    shape_screws(loc_screws=loc_cscrews_1,
+                 dia_screws=dia_cscrews,
+                 dia_head=dia_chead,
+                 height_head=height_chead,
+                 height_screws=height_screws_1,
+                 extend=extend,
+                 bottom_fn=bottom_fn);
 
-    cutout_case_screws(loc_screws=loc_cscrews_2,
-                       dia_screw=dia_cscrew,
-                       dia_head=dia_chead,
-                       height_head=height_chead,
-                       height_screws=height_screws_2,
-                       extend=extend);
+    shape_screws(loc_screws=loc_cscrews_2,
+                 dia_screws=dia_cscrews,
+                 dia_head=dia_chead,
+                 height_head=height_chead,
+                 height_screws=height_screws_2,
+                 extend=extend,
+                 bottom_fn=bottom_fn);
                        
-    cutout_case_screws(loc_screws=loc_cscrews_3,
-                       dia_screw=dia_cscrew,
-                       dia_head=dia_chead,
-                       height_head=height_chead,
-                       height_screws=height_screws_3,
-                       extend=extend);
+    shape_screws(loc_screws=loc_cscrews_3,
+                 dia_screws=dia_cscrews,
+                 dia_head=dia_chead,
+                 height_head=height_chead,
+                 height_screws=height_screws_3,
+                 extend=extend,
+                 bottom_fn=bottom_fn);
                        
-    translate([0,0,dim_bat_case[2]]){
-        cutout_case_screws(loc_screws=loc_cscrews_4,
-                           dia_screw=dia_cscrew,
-                           dia_head=dia_chead,
-                           height_head=height_chead,
-                           height_screws=height_screws_4,
-                           extend=extend);
+    translate([0,0,dim_bat_case[2]-height_chead]){
+        shape_screws(loc_screws=loc_cscrews_4,
+                     dia_screws=dia_cscrews,
+                     dia_head=dia_chead,
+                     height_head=height_chead,
+                     height_screws=height_screws_4,
+                     extend=extend,
+                     bottom_fn=bottom_fn);
     }
     
-    cutout_case_screws(loc_screws=loc_cscrews_5,
-                       dia_screw=dia_cscrew,
-                       dia_head=dia_chead,
-                       height_head=height_chead,
-                       height_screws=height_screws_5,
-                       extend=extend);
+    shape_screws(loc_screws=loc_cscrews_5,
+                 dia_screws=dia_cscrews,
+                 dia_head=dia_chead,
+                 height_head=height_chead,
+                 height_screws=height_screws_5,
+                 extend=extend,
+                 bottom_fn=bottom_fn);
 }
 
-module cutout_case_corners(loc_corners,
-                           size,
-                           height,
-                           height_head,
-                           extend)
-{
-    screw_holes(loc=loc_corners,dia=size,h=height+extend);
-    translate([0,0,height-height_head]){
-        screw_holes(loc=loc_corners,dia=size,h=height);
-    }
-}
-
-module cutout_case_screws(loc_screws,
+module shape_screws(loc_screws,
                           dia_screws,
                           dia_head,
+                          height_head,
                           height_screws,
                           extend=0,
                           bottom_fn=6){
     translate([0,0,-extend]){
-        // cut out screw holes
         screw_holes(loc=loc_screws,dia=dia_screws,h=height_screws+extend);
-        // cut out screw heads bottom
-        screw_holes(loc=loc_screws,dia=dia_head,h=height_head+extend,fn=bottom_fn);
-        // cut of corners
-        //screw_holes(loc=loc_corner,dia=dia_head,h=height_head+extend);
-        // cut out screw heads top
+    }
+    translate([0,0,-extend]){
+        #screw_holes(loc=loc_screws,dia=dia_head,h=height_head+extend,fn=bottom_fn);
     }
     translate([0,0,height_screws-height_head]){
         screw_holes(loc=loc_screws,dia=dia_head,h=height_head+extend);
-//        screw_holes(loc=loc_corner,dia=dia_head,h=height_head);
     }
 }
 
@@ -311,19 +265,46 @@ module shape_cases(){
 }
 
 module shape_ports(){
-    part_bat(part="cutout_shape");
+    part_bat(part="cutout_shape",cuts=cuts_bat_case);
     place_pi_case(){
-        part_pi(part="cutout_shape");
+        part_pi(part="cutout_shape",cuts=cuts_pi_case);
     }
     place_t3_case(){
-        part_t3(part="cutout_shape");
+        part_t3(part="cutout_shape",cuts=cuts_t3_case);
     }
 }
+
+module shape_connection(){
+    translate([wall_frame,wall_frame,dim_bat_case[2]]){
+        cube([dim_bat_case[0]-dim_pi_case[0],dim_pi_case[1],dim_pi_case[2]-4]);
+    }
+}
+
+//////////////////////////////////////////
+// separation cubes
+
+module sep_bottom(){
+    translate([-20,-20,0])
+   cube([dim_sep[0],dim_sep[1],height_sep_bottom]);
+}
+
+module sep_middle(){
+    translate([-20,-20,height_sep_bottom]){
+        cube([dim_sep[0],dim_sep[1],height_sep_middle]);
+    }
+}
+
+module sep_top(){
+    translate([-20,-20,height_sep_bottom+height_sep_middle]){
+        cube([dim_sep[0],dim_sep[1],height_sep_top]);
+    }
+}
+
 
 ////////////////////////////////////////////
 // imported part modules with static values
 
-module part_bat(part){
+module part_bat(part,cuts){
     bat(part=part,
         dia_chead=0,
         dia_cscrew=0,
@@ -332,10 +313,11 @@ module part_bat(part){
         mki=mki,
         wall=wall_frame,
         rim=rim,
-        render_top=0);
+        render_top=0,
+        cuts=cuts);
 }
 
-module part_pi(part){
+module part_pi(part,cuts){
     RaspberryPiZero(part=part,
                     dia_chead=0,
                     dia_cscrew=0,
@@ -345,10 +327,11 @@ module part_pi(part){
                     rim=rim,
                     render_floor=0,
                     render_top=1,
-                    port_extend=20);
+                    port_extend=20,
+                    cuts=cuts);
 }
 
-module part_t3(part){
+module part_t3(part,cuts){
     T3(part=part,
             dia_chead=0,
             dia_cscrew=0,
@@ -357,5 +340,6 @@ module part_t3(part){
             wall=wall_frame,
             rim=rim,
             render_floor=0,
-            text="");
+            text="",
+            cuts=cuts);
 }

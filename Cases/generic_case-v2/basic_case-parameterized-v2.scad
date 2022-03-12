@@ -132,12 +132,7 @@ module case(part="frame", // which part to render
     height_top      = height_floor;
     
     height_frame    = calc_height_frame(space_top,space_bottom,dim_board);
-    echo("dim_board: ",dim_board);
-    echo("wall_frame: ",wall_frame);
-    echo("rim: ",rim);
-    echo("height_frame", height_frame);
     dim_frame       = calc_dim_frame(dim_board,wall_frame,rim,height_frame);
-    echo("dim_frame: ",dim_frame);
     
     wall_case       = calc_wall_case(dia_chead,wall_frame);
     height_case     = calc_height_case(height_frame,height_top,height_floor);

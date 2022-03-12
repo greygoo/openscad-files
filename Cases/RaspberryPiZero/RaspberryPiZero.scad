@@ -2,7 +2,7 @@ $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
 //part                = "case_all";
-//RaspberryPiZero(part=part);
+//RaspberryPiZero(part=part,cuts=cuts_pi);
 
 // Fixed values - do not change
 dim_pi_board        = [65,30,1.5];
@@ -17,7 +17,7 @@ cuts_pi             = [[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"], 
                        [[19.5,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"], // usb2
                        [[47,-dim_pi_board[2]-3.4],[11.3,3.4],"front","sqr_indent"],  // mini hdmi
                        [[11.3,-dim_pi_board[2]-3+0.7],[11.8,6],"right","sqr_indent"],  // SD
-                       [[6.6,-dim_pi_board[2]-2.2],[16.7,2.2],"left","sqr_indent"], // cam
+                       [[5.6,-dim_pi_board[2]-2.2],[17.7,2.2],"left","sqr_indent"], // cam
                        //[[6.5,23.5],[51,5.5],"top","sqr"] // gpio header
                        ];
 space_pi_screws     = 2;
@@ -38,7 +38,8 @@ module RaspberryPiZero(part="case_all",
                        height_bottom = 4.8,
                        render_floor = 1,
                        render_top = 1,
-                       port_extend=20){              
+                       port_extend=20,
+                       cuts){              
                
     case(part=part,
          dim_board=dim_pi_board,
@@ -47,7 +48,7 @@ module RaspberryPiZero(part="case_all",
          dia_bscrew=dia_pi_screws,
          space_bscrew=space_pi_screws,     
          loc_bscrews=loc_pi_screws,
-         cuts=cuts_pi,
+         cuts=cuts,
          wall_frame=wall,
          rim=rim,
          port_length=port_length,

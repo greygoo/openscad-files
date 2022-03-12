@@ -1,10 +1,10 @@
 $fn=32;
 include <../generic_case-v2/basic_case-parameterized-v2.scad>
 
-//part                = "case_all";
+//part                = "case_inlay";
 
 // Render
-//bat(part);
+//bat(part=part,cuts=cuts_bat);
 
 dim_bat_board        = [100.5,48.5,1.65];
 uppers_bat           = 5;
@@ -36,7 +36,8 @@ module bat(part                = "case_all",
            mki                 = 4,
            port_length         = 4.8,
            render_floor        = true,
-           render_top          = true){
+           render_top          = true,
+           cuts){
     
     case(part=part,
          dim_board=dim_bat_board,
@@ -45,7 +46,7 @@ module bat(part                = "case_all",
          dia_bscrew=dia_bat_screws,
          space_bscrew=space_bat_screws,     
          loc_bscrews=loc_bat_screws,
-         cuts=cuts_bat,
+         cuts=cuts,
          wall_frame=wall,
          rim=rim,
          port_length=port_length,      
