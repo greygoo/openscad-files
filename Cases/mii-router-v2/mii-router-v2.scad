@@ -8,7 +8,7 @@ mki=0.5;
 lowers_t3=5;
 uppers_pi=4;
 dia_cscrews=3.5;
-dia_chead=5.5;
+dia_chead=5.7;
 height_chead=3;
 
 offset_pi_y=0;
