@@ -1,6 +1,7 @@
 include <../RaspberryPiZero/RaspberryPiZero.scad>
 include <../LoRa-T3/LoRa-T3_case.scad>
 include <../18650x2_battery/18650x2.scad>
+include <../../library/part-antenna_socket.scad>
 
 wall_frame=1.2;
 rim=0.8;
@@ -10,6 +11,7 @@ uppers_pi=4;
 dia_cscrews=3.5;
 dia_chead=5.7;
 height_chead=3;
+height_as_screw=1;
 
 offset_pi_y=0;
 offset_t3_x=0;
@@ -28,6 +30,7 @@ cuts_pi_case         = [//[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"
                        //[[6.6,-dim_pi_board[2]-2.2],[16.7,2.2],"left","sqr_indent"], // cam
                        //[[6.5,23.5],[51,5.5],"top","sqr"] // gpio header
                        [[2,-dim_pi_board[2]-4.4],[23,8],"left","sqr"], // con t3
+                       [[30,-6.5],[7.7,2.8],"front","sqr"], // debug port
                        ];
                        
 // override t3 ports
@@ -98,7 +101,7 @@ loc_cscrews_corner_3     = [[-wall_frame-dia_chead/4,
                              dim_case[1]+0.36844+wall_frame]];
 loc_cscrews_corner_4     = [[-wall_frame-dia_chead/4,
                              dim_t3_case[1]+dim_pi_case[1]+dia_chead/4+0.36844+wall_frame],
-                            [dim_t3_case[0]+wall_frame,
+                            [dim_t3_case[0]+wall_frame-5,
                              dim_t3_case[1]+dia_chead/4+dim_pi_case[1]+0.36844+wall_frame]];
 loc_cscrews_corner_5     = [[-wall_frame-dia_chead/4,-wall_frame-dia_chead/4-0.36844]];                             
 
@@ -107,8 +110,12 @@ loc_cscrews_2     = [[dim_case[0]+wall_frame,-wall_frame-0.36844],
                      [dim_case[0]+wall_frame+dia_chead/2,dim_pi_case[1]+wall_frame]];
 loc_cscrews_3     = [[-wall_frame,dim_case[1]+0.36844+wall_frame]];
 loc_cscrews_4     = [[-wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame],
-                    [dim_t3_case[0]+wall_frame,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame]];
+                    [dim_t3_case[0]+wall_frame-5,dim_t3_case[1]+dim_pi_case[1]+0.36844+wall_frame]];
 loc_cscrews_5     = [[-wall_frame,-wall_frame-0.36844]];
+
+height_as=height_antenna_socket(height_as_screw,height_as_rim,height_as_foot);
+
+
 
 
 //////////////////////////////////////////
@@ -153,23 +160,28 @@ module bottom(){
     }
 }
 
+//shape_cutout_wifi();
+//shape_port_wifi();
 module case_all(){
     difference(){
         hull(){
             cases();
             shape_screws_all(extend=0,bottom_fn=32);
+            shape_cutout_wifi();
         }
         shape_cases();
         shape_ports();
         shape_screws_all(extend=10,bottom_fn=6);
         shape_screws_corner_all(extend=10);
         shape_connection();
+        shape_port_wifi();
         
     }
     difference(){
         cases();
         shape_screws_all(extend=0,bottom_fn=6);
         shape_screws_corner_all(extend=10);
+        shape_port_wifi();
     }
 }
 
@@ -205,6 +217,27 @@ module place_t3_case() {
 
 ////////////////////////////////////////////
 // shapes
+module shape_port_wifi(){
+    translate([dim_pi_frame[0]+10,dim_bat_frame[1]+height_as+5,dim_bat_case[2]-2]){
+        rotate([90,0,0]){
+            translate([-dia_as_rim/2,-dia_as_rim,height_as_screw+7]){
+                    cube([dia_as_rim,2*dia_as_rim,height_as_rim+height_as_foot]);
+                }
+            antenna_socket(h=height_as_screw+5);
+        }
+    }
+}
+//shape_cutout_wifi();
+module shape_cutout_wifi(){
+    translate([dim_pi_frame[0]+10,dim_bat_frame[1]+height_as+1,dim_bat_case[2]-2]){
+        rotate([90,0,0]){
+            translate([-dia_as_rim/2,-dia_as_rim/2,0]){
+                cube([dia_as_rim,dia_as_rim,height_as]);
+            }
+        }
+    }
+}
+
 module shape_screws_corner_all(extend){
     shape_screws_corner(loc_screws=loc_cscrews_corner_1,
                  dia_screws=dia_cscrews,
