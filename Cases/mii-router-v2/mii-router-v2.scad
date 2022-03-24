@@ -30,7 +30,7 @@ cuts_pi_case         = [//[[7,-dim_pi_board[2]-2.7],[8.2,3],"front","sqr_indent"
                        //[[6.6,-dim_pi_board[2]-2.2],[16.7,2.2],"left","sqr_indent"], // cam
                        //[[6.5,23.5],[51,5.5],"top","sqr"] // gpio header
                        [[2,-dim_pi_board[2]-4.4],[23,8],"left","sqr"], // con t3
-                       [[30,-6.5],[7.7,2.8],"front","sqr"], // debug port
+                       [[30,-6.5],[15.3,2.8],"front","sqr"], // debug port
                        ];
                        
 // override t3 ports
